@@ -38,7 +38,7 @@ The indicators are organized into eight categories that collectively span the di
 
 1. **National Economic Activity** — Broad composite indexes (CFNAI) that aggregate dozens of underlying series into a single measure of whether the economy is above or below trend growth. The CFNAI is itself the first principal component of 85 indicators; its 3-month moving average below -0.70 has historically signaled recession with 86% accuracy.
 
-2. **Industrial Indicators** — Manufacturing output, capacity utilization, and the ISM PMI. Industrial production (INDPRO) is a key coincident indicator that declines sharply during recessions. The ISM PMI is one of the most-watched leading indicators; readings below 50 indicate manufacturing contraction.
+2. **Industrial Indicators** — Manufacturing output, capacity utilization, and business confidence. Industrial production (INDPRO) is a key coincident indicator that declines sharply during recessions. The OECD Manufacturing Confidence Indicator (BSCICP02USM460S) serves as a proxy for manufacturing sentiment, with data on FRED back to 1950. (The ISM PMI, the traditional choice, was removed from FRED in 2016 at ISM's request.)
 
 3. **Consumer Measures** — Consumer sentiment and spending. Since consumer spending represents roughly 70% of GDP, weakness here directly reduces aggregate demand. Sharp declines in the University of Michigan Consumer Sentiment Index (UMCSENT) have preceded every recession in its history.
 
@@ -119,7 +119,7 @@ All series sourced from FRED (Federal Reserve Bank of St. Louis), plus two deriv
 | Category | Series | Transform |
 |----------|--------|-----------|
 | **National Activity** | CFNAI, CFNAIMA3, GDPC1, USSLIND | Level / YoY |
-| **Industrial** | INDPRO, NAPM, TCU, DGORDER, IPMAN | YoY / Level |
+| **Industrial** | INDPRO, BSCICP02USM460S (OECD Manufacturing Confidence), TCU, DGORDER, IPMAN | YoY / Level |
 | **Consumer** | UMCSENT, PCECC96, DSPIC96, RSAFS | Level / YoY |
 | **Labor Market** | UNRATE, ICSA, PAYEMS, CIVPART, JTSJOL | Level / YoY |
 | **Inflation** | CPIAUCSL, PCEPILFE, PCEPI, CPILFESL, PPIACO | YoY |
