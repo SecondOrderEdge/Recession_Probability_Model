@@ -199,8 +199,29 @@ def has_separation(res):
     return False
 
 
+# Expected coefficient signs for economic validity
+SIGN_CONSTRAINTS = {
+    "SPREAD": "negative",       # lower spread = higher recession risk
+    "UNRATE_CHG3": "positive",  # rising unemployment = higher recession risk
+    "UMCSENT": "negative",      # lower sentiment = higher recession risk
+}
+
+
+def _check_sign_constraints(res, selected_feats):
+    """Return True if all sign constraints are satisfied."""
+    for feat in selected_feats:
+        if feat in SIGN_CONSTRAINTS and feat in res.params.index:
+            coef = res.params[feat]
+            expected = SIGN_CONSTRAINTS[feat]
+            if expected == "negative" and coef > 0:
+                return False
+            if expected == "positive" and coef < 0:
+                return False
+    return True
+
+
 def forward_stepwise_bic(y, X_all, feature_names, max_features, seed=None):
-    """Forward stepwise BIC selection with separation detection."""
+    """Forward stepwise BIC selection with separation detection and sign constraints."""
     selected = list(seed) if seed else []
     remaining = [f for f in feature_names if f not in selected]
 
@@ -217,7 +238,7 @@ def forward_stepwise_bic(y, X_all, feature_names, max_features, seed=None):
             try:
                 X_try = sm.add_constant(X_all[selected + [feat]].astype(float))
                 res = sm.Probit(y, X_try).fit(disp=False, method="bfgs", maxiter=300)
-                if not has_separation(res):
+                if not has_separation(res) and _check_sign_constraints(res, selected + [feat]):
                     candidates.append((feat, res.bic))
             except Exception:
                 pass
@@ -532,6 +553,13 @@ def run():
                                          available_features, MAX_FEATURES_BIC, seed)
     print(f"Selected: {bic_selected}")
 
+    # Fallback: if BIC selection returned only the seed (no valid additions),
+    # fall back to Wright two-variable model
+    spread_feat = "SPREAD" if "SPREAD" in available_features else available_features[0]
+    if len(bic_selected) <= len(seed):
+        print("WARNING: No valid BIC combination found. Falling back to Wright model.")
+        bic_selected = [f for f in [spread_feat, "FEDFUNDS"] if f in available_features]
+
     # 5. Fit models
     print("\nFitting models...")
     models = {}
@@ -561,32 +589,16 @@ def run():
         name = res_bic.params.index[k]
         print(f"  {name:<20s} {res_bic.params.iloc[k]:>10.4f} {res_bic.bse.iloc[k]:>10.4f} {res_bic.tvalues.iloc[k]:>8.2f} {res_bic.pvalues.iloc[k]:>10.4f}")
 
-    # Coefficient sign checks
+    # Sign constraints are enforced during BIC selection — verify they hold
     sign_warnings = []
-    if "UMCSENT" in bic_selected:
-        umcsent_coef = res_bic.params["UMCSENT"]
-        if umcsent_coef > 0:
-            msg = (f"WARNING: UMCSENT has positive coefficient ({umcsent_coef:.4f}) — "
-                   "higher sentiment predicts higher recession risk. "
-                   "This is economically counterintuitive and may indicate model misspecification.")
-            print(f"\n  *** {msg}")
-            sign_warnings.append(msg)
-    if "SPREAD" in bic_selected:
-        spread_coef = res_bic.params["SPREAD"]
-        if spread_coef > 0:
-            msg = (f"WARNING: SPREAD has positive coefficient ({spread_coef:.4f}) — "
-                   "model says higher spread = higher recession risk. "
-                   "Expected negative. Model may be misspecified.")
-            print(f"\n  *** {msg}")
-            sign_warnings.append(msg)
-    if "UNRATE_CHG3" in bic_selected:
-        unchg_coef = res_bic.params["UNRATE_CHG3"]
-        if unchg_coef < 0:
-            msg = (f"WARNING: UNRATE_CHG3 has negative coefficient ({unchg_coef:.4f}) — "
-                   "model says rising unemployment = lower recession risk. "
-                   "Expected positive. Model may be misspecified.")
-            print(f"\n  *** {msg}")
-            sign_warnings.append(msg)
+    for feat, expected in SIGN_CONSTRAINTS.items():
+        if feat in bic_selected and feat in res_bic.params.index:
+            coef = res_bic.params[feat]
+            violated = (expected == "negative" and coef > 0) or (expected == "positive" and coef < 0)
+            if violated:
+                msg = f"WARNING: {feat} sign constraint violated (coef={coef:.4f}, expected {expected})"
+                print(f"\n  *** {msg}")
+                sign_warnings.append(msg)
 
     # 6. Generate predictions on latest data
     latest_vals = predict_df[bic_selected].iloc[-1].astype(float).values

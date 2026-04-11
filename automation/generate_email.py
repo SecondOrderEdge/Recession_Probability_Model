@@ -85,13 +85,17 @@ MODEL OUTPUT:
 {json.dumps(summary, indent=2)}
 
 Write the email with these sections:
-1. **Subject line** — one line, include the probability and signal level
+1. **Subject line** — one line, lead with the ensemble probability and signal level.
+   Format: "Recession Probability: [ensemble]% ([SIGNAL]) — Models range [low]% to [high]%"
 
-2. **Executive Summary** (3-5 sentences) — Lead with the headline probability and CI. Explain
-   what the BIC-selected model is measuring (12-month-ahead recession probability via probit
-   regression on FRED macro data). Note the consensus across model specifications and whether
-   they agree or diverge. If they diverge, explain WHY — e.g. the spread-only model sees
-   yield curve risk that the multi-variable model discounts because other indicators are strong.
+2. **Executive Summary** (3-5 sentences) — The headline figure is the ENSEMBLE probability
+   (ensemble_probability in the JSON), which is the equal-weighted average of all five models
+   (NY Fed, Wright, BIC-Selected, Estrella-Mishkin, Chauvet-Piger). Lead with: "Our five-model
+   ensemble estimates [X]% probability of recession in the next 12 months. Individual models
+   range from [low]% to [high]%." Then note consensus strength and whether models agree or
+   diverge. The BIC-selected model is ONE input among five — do not present it as the primary
+   figure. If models diverge, explain WHY — e.g. the spread-only model sees yield curve risk
+   that the multi-variable model discounts because other indicators are strong.
 
 3. **Key Indicators Deep Dive** — For EACH BIC-selected indicator, provide:
    - Current value and its historical percentile
@@ -126,9 +130,10 @@ Write the email with these sections:
    What happened next? Are there any periods in history where the model was similarly
    low but a recession followed anyway?
 
-8. **Bottom Line for the Committee** — 2-3 sentences of actionable guidance. Reference
-   the specific trigger levels from the watchlist: "The nearest trigger is [X indicator]
-   at [value], currently [distance] away. Until [specific condition], maintain current
+8. **Bottom Line for the Committee** — 2-3 sentences of actionable guidance. Lead with the
+   ensemble figure, not the BIC model: "Our five-model ensemble at [X]% signals [SIGNAL]
+   risk." Reference the specific trigger levels from the watchlist: "The nearest trigger is
+   [indicator] at [value], currently [distance] away. Until [condition], maintain current
    positioning." What would change the recommendation next week?
 
 Format the email body as clean HTML suitable for email clients. Use inline CSS only.
