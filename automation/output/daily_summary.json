@@ -1,6 +1,14 @@
 {
   "run_date": "2026-04-11",
   "data_through": "2026-01",
+  "lagged_series": [
+    "SPREAD (last: 2026-02)",
+    "HSN1F_YOY (last: 2026-01)",
+    "FEDFUNDS (last: 2026-02)",
+    "CPILFESL_YOY (last: 2026-02)",
+    "PPIACO_YOY (last: 2026-02)",
+    "HOUST_YOY (last: 2026-01)"
+  ],
   "ensemble_probability": 11.46,
   "bic_probability": 8.47,
   "ci_lower": 4.5,
