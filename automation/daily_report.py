@@ -69,7 +69,6 @@ SERIES_CONFIG = {
     "UNRATE":   {"name": "Unemployment Rate",                     "category": "Labor", "transform": "level"},
     "ICSA":     {"name": "Initial Unemployment Claims",           "category": "Labor", "transform": "yoy", "freq": "W"},
     "PAYEMS":   {"name": "Total Nonfarm Payrolls",                "category": "Labor", "transform": "yoy"},
-    "CIVPART":  {"name": "Labor Force Participation Rate",        "category": "Labor", "transform": "level"},
     "JTSJOL":   {"name": "Job Openings (JOLTS)",                  "category": "Labor", "transform": "yoy"},
     "CPIAUCSL": {"name": "CPI All Urban Consumers",              "category": "Inflation", "transform": "yoy"},
     "PCEPILFE": {"name": "Core PCE Price Index",                  "category": "Inflation", "transform": "yoy"},
@@ -93,6 +92,7 @@ SERIES_CONFIG = {
 
 TARGET_SERIES = {
     "USREC": {"name": "NBER Recession Indicator", "category": "Target"},
+    "RECPROUSM156N": {"name": "Chauvet-Piger Recession Prob", "category": "Benchmark"},
 }
 
 
@@ -298,33 +298,58 @@ def generate_history_chart(fitted, oos, usrec, output_path):
     plt.close()
 
 
-def generate_sensitivity_chart(bic_selected, model_params, baseline_x, model_df, output_path):
-    """Generate sensitivity bar chart."""
-    scenario_data = []
-    for j, feat in enumerate(bic_selected):
-        sd = model_df[feat].std()
-        x_up = baseline_x.copy()
-        x_up[j] += sd
-        x_down = baseline_x.copy()
-        x_down[j] -= sd
-        xc_up = np.concatenate([[1.0], x_up])
-        xc_down = np.concatenate([[1.0], x_down])
-        prob_up = stats.norm.cdf(xc_up @ model_params) * 100
-        prob_down = stats.norm.cdf(xc_down @ model_params) * 100
-        scenario_data.append((feat, prob_up - prob_down))
+def generate_sensitivity_chart(scenario_data, output_path):
+    """Generate watchlist chart showing current value vs trigger levels."""
+    feats = []
+    currents = []
+    triggers_30 = []
+    triggers_50 = []
 
-    fig, ax = plt.subplots(figsize=(10, max(3, len(bic_selected) * 0.5)))
-    feats = [s[0] for s in scenario_data]
-    impacts = [s[1] for s in scenario_data]
-    colors = ["#d62728" if imp > 0 else "#2ca02c" for imp in impacts]
-    ax.barh(feats, impacts, color=colors)
-    ax.axvline(x=0, color="gray", linewidth=0.8)
-    ax.set_xlabel("Impact on Probability (pp) from +1 SD Shock")
-    ax.set_title("Sensitivity: Which Indicators Move the Needle?", fontweight="bold")
+    for s in scenario_data:
+        feats.append(s["feature"])
+        currents.append(s["current_value"])
+        triggers_30.append(s.get("trigger_30pct"))
+        triggers_50.append(s.get("trigger_50pct"))
+
+    fig, axes = plt.subplots(len(feats), 1, figsize=(10, len(feats) * 1.2))
+    if len(feats) == 1:
+        axes = [axes]
+
+    for ax, feat, cur, t30, t50, s in zip(axes, feats, currents, triggers_30, triggers_50, scenario_data):
+        sd = s["std_dev"]
+        lo = cur - 3 * sd
+        hi = cur + 3 * sd
+
+        # Background bar
+        ax.barh(0, hi - lo, left=lo, height=0.6, color="#f0f0f0", edgecolor="none")
+
+        # Current value marker
+        ax.plot(cur, 0, "D", color="#1a1a2e", markersize=10, zorder=5)
+        ax.annotate(f"{cur:.1f}", (cur, 0), textcoords="offset points",
+                    xytext=(0, 12), ha="center", fontsize=8, fontweight="bold")
+
+        # Trigger level markers
+        if t30 is not None and lo < t30 < hi:
+            ax.axvline(x=t30, color="#ff7f0e", linewidth=2, linestyle="--", alpha=0.8)
+            ax.annotate(f"30%: {t30:.1f}", (t30, 0), textcoords="offset points",
+                        xytext=(0, -14), ha="center", fontsize=7, color="#ff7f0e")
+        if t50 is not None and lo < t50 < hi:
+            ax.axvline(x=t50, color="#d62728", linewidth=2, linestyle="--", alpha=0.8)
+            ax.annotate(f"50%: {t50:.1f}", (t50, 0), textcoords="offset points",
+                        xytext=(0, -22), ha="center", fontsize=7, color="#d62728")
+
+        ax.set_xlim(lo, hi)
+        ax.set_yticks([])
+        ax.set_ylabel(feat, fontsize=8, rotation=0, ha="right", va="center")
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.spines["left"].set_visible(False)
+        ax.tick_params(axis="x", labelsize=7)
+
+    axes[0].set_title("Watchlist: Current Value vs. Trigger Levels", fontsize=13, fontweight="bold")
     plt.tight_layout()
     plt.savefig(output_path, dpi=150, bbox_inches="tight", facecolor="white")
     plt.close()
-    return scenario_data
 
 
 def generate_percentile_chart(bic_selected, latest_vals, model_df, feat_to_cat, output_path):
@@ -414,8 +439,8 @@ def generate_sparklines(bic_selected, data, feat_to_cat, output_path):
         else:
             trend = 0
 
-        color = "#d62728" if trend > 0 and feat in ["UNRATE_CHG3", "PPIACO_YOY", "UMCSENT"] else \
-                "#d62728" if trend < 0 and feat in ["SPREAD", "HSN1F_YOY", "CIVPART"] else \
+        color = "#d62728" if trend > 0 and feat in ["UNRATE_CHG3", "PPIACO_YOY", "UMCSENT", "UNRATE", "BAA10YM"] else \
+                "#d62728" if trend < 0 and feat in ["SPREAD", "HSN1F_YOY"] else \
                 "#2ca02c"
 
         ax.plot(series.index, series.values, color=color, linewidth=1.5)
@@ -532,7 +557,26 @@ def run():
     latest_vals = predict_df[bic_selected].iloc[-1].astype(float).values
     latest_xc = np.concatenate([[1.0], latest_vals])
     bic_prob = stats.norm.cdf(latest_xc @ res_bic.params.values) * 100
-    data_date = predict_df.index[-1].strftime("%Y-%m")
+    # Data-through = last observation of the most-lagged BIC-selected feature
+    # (scoped to features driving the headline, not all 37 series)
+    bic_last_dates = {}
+    for feat in bic_selected:
+        # Map derived feature back to raw FRED series
+        raw_sid = feat.replace("_YOY", "") if feat.endswith("_YOY") else feat
+        if raw_sid in raw_data.columns:
+            last_valid = raw_data[raw_sid].last_valid_index()
+            if last_valid is not None:
+                bic_last_dates[feat] = last_valid
+        elif feat in data.columns:
+            last_valid = data[feat].last_valid_index()
+            if last_valid is not None:
+                bic_last_dates[feat] = last_valid
+    if bic_last_dates:
+        most_lagged = min(bic_last_dates, key=bic_last_dates.get)
+        data_date = bic_last_dates[most_lagged].strftime("%Y-%m")
+        print(f"Data through: {data_date} (most-lagged BIC feature: {most_lagged})")
+    else:
+        data_date = predict_df.index[-1].strftime("%Y-%m")
 
     model_probs = {}
     for name, m in models.items():
@@ -545,6 +589,11 @@ def run():
     if "SPREAD" in data.columns:
         spread_val = data["SPREAD"].dropna().iloc[-1]
         model_probs["Estrella-Mishkin"] = stats.norm.cdf(-0.6045 - 0.7374 * spread_val) * 100
+
+    # Chauvet-Piger smoothed recession probability (independent Markov-switching model)
+    if "RECPROUSM156N" in data.columns:
+        cp_val = data["RECPROUSM156N"].dropna().iloc[-1]
+        model_probs["Chauvet-Piger"] = float(cp_val)
 
     print(f"\nCurrent probability (BIC-Selected): {bic_prob:.2f}%")
     for name, p in model_probs.items():
@@ -569,26 +618,69 @@ def run():
     ci_upper = np.percentile(boot_probs, 95) * 100
     print(f"90% CI: [{ci_lower:.2f}%, {ci_upper:.2f}%]")
 
-    # 8. Sensitivity
+    # 8. Sensitivity — actionable watchlist levels
+    # For each indicator, find: what value would push probability to 30%? To 50%?
+    # And show the +/- 1 SD impact for context.
     scenario_data = []
     for j, feat in enumerate(bic_selected):
         sd = model_df[feat].std()
+        current = float(latest_vals[j])
+        coef = res_bic.params.iloc[j + 1]
+
+        # +/- 1 SD impact (traditional sensitivity)
         x_up = latest_vals.copy()
         x_up[j] += sd
-        xc_up = np.concatenate([[1.0], x_up])
         x_down = latest_vals.copy()
         x_down[j] -= sd
+        xc_up = np.concatenate([[1.0], x_up])
         xc_down = np.concatenate([[1.0], x_down])
         prob_up = stats.norm.cdf(xc_up @ res_bic.params.values) * 100
         prob_down = stats.norm.cdf(xc_down @ res_bic.params.values) * 100
+
+        # Find threshold trigger levels: what value of this indicator
+        # (holding all others constant) would push probability to 30%? 50%?
+        trigger_levels = {}
+        for threshold in [THRESHOLD_WARNING, THRESHOLD_ELEVATED]:
+            # Binary search for the indicator value that hits the threshold
+            # Search in the direction that increases probability
+            lo, hi = current - 6 * sd, current + 6 * sd
+            for _ in range(60):
+                mid = (lo + hi) / 2
+                x_test = latest_vals.copy()
+                x_test[j] = mid
+                xc_test = np.concatenate([[1.0], x_test])
+                p_test = stats.norm.cdf(xc_test @ res_bic.params.values) * 100
+                if p_test < threshold:
+                    if coef > 0:
+                        lo = mid
+                    else:
+                        hi = mid
+                else:
+                    if coef > 0:
+                        hi = mid
+                    else:
+                        lo = mid
+            # Verify we actually found it (not at boundary)
+            x_check = latest_vals.copy()
+            x_check[j] = mid
+            xc_check = np.concatenate([[1.0], x_check])
+            p_check = stats.norm.cdf(xc_check @ res_bic.params.values) * 100
+            if abs(p_check - threshold) < 1.0:
+                trigger_levels[f"trigger_{threshold}pct"] = round(float(mid), 2)
+                trigger_levels[f"distance_{threshold}pct"] = round(float(mid - current), 2)
+            else:
+                trigger_levels[f"trigger_{threshold}pct"] = None
+                trigger_levels[f"distance_{threshold}pct"] = None
+
         scenario_data.append({
             "feature": feat,
             "category": feat_to_cat.get(feat, ""),
-            "current_value": float(latest_vals[j]),
+            "current_value": current,
             "std_dev": float(sd),
-            "prob_down": float(prob_down),
-            "prob_up": float(prob_up),
+            "prob_minus_1sd": float(prob_down),
+            "prob_plus_1sd": float(prob_up),
             "impact_pp": float(prob_up - prob_down),
+            **trigger_levels,
         })
 
     # Adverse scenario
@@ -599,6 +691,17 @@ def run():
         x_adverse[j] += sd if coef > 0 else -sd
     xc_adverse = np.concatenate([[1.0], x_adverse])
     adverse_prob = stats.norm.cdf(xc_adverse @ res_bic.params.values) * 100
+
+    # Print watchlist
+    print("\nWatchlist — trigger levels:")
+    print(f"  {'Feature':<20s} {'Current':>10s} {'→30% at':>10s} {'Distance':>10s} {'→50% at':>10s} {'Distance':>10s}")
+    print("  " + "-" * 70)
+    for s in scenario_data:
+        t30 = f"{s['trigger_30pct']:.2f}" if s.get('trigger_30pct') is not None else "n/a"
+        d30 = f"{s['distance_30pct']:+.2f}" if s.get('distance_30pct') is not None else "n/a"
+        t50 = f"{s['trigger_50pct']:.2f}" if s.get('trigger_50pct') is not None else "n/a"
+        d50 = f"{s['distance_50pct']:+.2f}" if s.get('distance_50pct') is not None else "n/a"
+        print(f"  {s['feature']:<20s} {s['current_value']:>10.2f} {t30:>10s} {d30:>10s} {t50:>10s} {d50:>10s}")
 
     # 9. Generate charts
     print("\nGenerating charts...")
@@ -611,8 +714,7 @@ def run():
     generate_history_chart(fitted_full, None, usrec,
                            OUTPUT_DIR / "recession_probability_history.png")
 
-    generate_sensitivity_chart(bic_selected, res_bic.params.values,
-                                latest_vals, model_df,
+    generate_sensitivity_chart(scenario_data,
                                 OUTPUT_DIR / "sensitivity_chart.png")
 
     generate_percentile_chart(bic_selected, latest_vals, model_df, feat_to_cat,
