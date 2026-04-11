@@ -303,6 +303,12 @@ Areas where contributions would be particularly valuable:
 
 ---
 
+## Disclaimer
+
+This project is for **educational and research purposes only**. It is not financial advice, investment advice, or a recommendation to buy, sell, or hold any security or financial instrument. The model output should not be used as the sole basis for any investment decision. Past recession-prediction accuracy does not guarantee future performance. Economic models are inherently uncertain and can fail without warning, particularly during novel economic conditions. The authors assume no liability for any financial losses incurred from the use of this model. Consult a qualified financial advisor before making investment decisions.
+
+---
+
 ## License
 
 MIT License. See [LICENSE](LICENSE) for details.
