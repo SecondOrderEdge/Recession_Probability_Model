@@ -1,26 +1,26 @@
 {
   "run_date": "2026-04-11",
   "data_through": "2026-01",
-  "ensemble_probability": 10.41,
-  "bic_probability": 3.2,
-  "ci_lower": 0.88,
-  "ci_upper": 6.85,
+  "ensemble_probability": 11.46,
+  "bic_probability": 8.47,
+  "ci_lower": 4.5,
+  "ci_upper": 11.79,
   "signal": "LOW",
   "consensus": "MODERATE",
   "model_probabilities": {
     "NY Fed (Spread Only)": 19.48,
     "Wright (Spread + FF)": 12.89,
-    "BIC-Selected": 3.2,
+    "BIC-Selected": 8.47,
     "Estrella-Mishkin": 15.98,
     "Chauvet-Piger": 0.48
   },
   "bic_selected_features": [
     "SPREAD",
     "HSN1F_YOY",
-    "BUSLOANS_YOY",
     "FEDFUNDS",
-    "UNRATE",
-    "T10Y2Y"
+    "CPILFESL_YOY",
+    "PPIACO_YOY",
+    "HOUST_YOY"
   ],
   "indicator_readings": {
     "SPREAD": {
@@ -33,25 +33,25 @@
       "category": "Housing",
       "percentile": 44.0
     },
-    "BUSLOANS_YOY": {
-      "value": -3.0224,
-      "category": "Banking",
-      "percentile": 14.0
-    },
     "FEDFUNDS": {
       "value": 4.22,
       "category": "Yields",
       "percentile": 46.0
     },
-    "UNRATE": {
-      "value": 4.4,
-      "category": "Labor",
-      "percentile": 17.0
+    "CPILFESL_YOY": {
+      "value": 3.02,
+      "category": "Inflation",
+      "percentile": 56.0
     },
-    "T10Y2Y": {
-      "value": 0.56,
-      "category": "Yields",
-      "percentile": 43.0
+    "PPIACO_YOY": {
+      "value": 3.709,
+      "category": "Inflation",
+      "percentile": 57.0
+    },
+    "HOUST_YOY": {
+      "value": -2.1371,
+      "category": "Housing",
+      "percentile": 41.0
     }
   },
   "sensitivity": [
@@ -60,87 +60,87 @@
       "category": "Yields (derived)",
       "current_value": 0.20000000000000018,
       "std_dev": 1.3112982571854181,
-      "prob_minus_1sd": 6.7599833392272854,
-      "prob_plus_1sd": 1.354508266767033,
-      "impact_pp": -5.405475072460252,
-      "trigger_30pct": -4.66,
-      "distance_30pct": -4.86,
-      "trigger_50pct": -6.58,
-      "distance_50pct": -6.78
+      "prob_minus_1sd": 17.96282387433773,
+      "prob_plus_1sd": 3.349492476427464,
+      "impact_pp": -14.613331397910265,
+      "trigger_30pct": -2.24,
+      "distance_30pct": -2.44,
+      "trigger_50pct": -3.74,
+      "distance_50pct": -3.94
     },
     {
       "feature": "HSN1F_YOY",
       "category": "Housing",
       "current_value": 0.2789400278939924,
       "std_dev": 19.531841502652707,
-      "prob_minus_1sd": 6.79769651992857,
-      "prob_plus_1sd": 1.3445537041232263,
-      "impact_pp": -5.453142815805343,
-      "trigger_30pct": -71.55,
-      "distance_30pct": -71.83,
-      "trigger_50pct": -99.92,
-      "distance_50pct": -100.2
-    },
-    {
-      "feature": "BUSLOANS_YOY",
-      "category": "Banking",
-      "current_value": -3.0224349464741063,
-      "std_dev": 8.066368903544982,
-      "prob_minus_1sd": 0.7517220553309475,
-      "prob_plus_1sd": 10.158430867586754,
-      "impact_pp": 9.406708812255806,
-      "trigger_30pct": 15.46,
-      "distance_30pct": 18.48,
-      "trigger_50pct": 22.76,
-      "distance_50pct": 25.78
+      "prob_minus_1sd": 8.805643633488614,
+      "prob_plus_1sd": 8.140181514068507,
+      "impact_pp": -0.6654621194201074,
+      "trigger_30pct": null,
+      "distance_30pct": null,
+      "trigger_50pct": null,
+      "distance_50pct": null
     },
     {
       "feature": "FEDFUNDS",
       "category": "Yields",
       "current_value": 4.22,
       "std_dev": 4.003849057736339,
-      "prob_minus_1sd": 0.21241799494493369,
-      "prob_plus_1sd": 19.905052367148052,
-      "impact_pp": 19.69263437220312,
-      "trigger_30pct": 9.5,
-      "distance_30pct": 5.28,
-      "trigger_50pct": 11.58,
-      "distance_50pct": 7.36
+      "prob_minus_1sd": 0.9053720039852948,
+      "prob_plus_1sd": 35.00775388234851,
+      "impact_pp": 34.10238187836322,
+      "trigger_30pct": 7.66,
+      "distance_30pct": 3.44,
+      "trigger_50pct": 9.78,
+      "distance_50pct": 5.56
     },
     {
-      "feature": "UNRATE",
-      "category": "Labor",
-      "current_value": 4.4,
-      "std_dev": 1.7700054100980651,
-      "prob_minus_1sd": 18.695621343433416,
-      "prob_plus_1sd": 0.24391997968866047,
-      "impact_pp": -18.451701363744757,
-      "trigger_30pct": 1.96,
-      "distance_30pct": -2.44,
-      "trigger_50pct": 1.0,
-      "distance_50pct": -3.4
+      "feature": "CPILFESL_YOY",
+      "category": "Inflation",
+      "current_value": 3.0199668258857892,
+      "std_dev": 2.4495240106767007,
+      "prob_minus_1sd": 28.60232697368502,
+      "prob_plus_1sd": 1.450006066407026,
+      "impact_pp": -27.152320907277993,
+      "trigger_30pct": 0.45,
+      "distance_30pct": -2.57,
+      "trigger_50pct": -1.14,
+      "distance_50pct": -4.16
     },
     {
-      "feature": "T10Y2Y",
-      "category": "Yields",
-      "current_value": 0.56,
-      "std_dev": 0.9287068753519669,
-      "prob_minus_1sd": 0.5805473756469001,
-      "prob_plus_1sd": 11.892631879181565,
-      "impact_pp": 11.312084503534665,
-      "trigger_30pct": 2.4,
-      "distance_30pct": 1.84,
-      "trigger_50pct": 3.12,
-      "distance_50pct": 2.56
+      "feature": "PPIACO_YOY",
+      "category": "Inflation",
+      "current_value": 3.709009743472036,
+      "std_dev": 5.835101766930696,
+      "prob_minus_1sd": 1.8807092489759134,
+      "prob_plus_1sd": 25.159133087770723,
+      "impact_pp": 23.278423838794808,
+      "trigger_30pct": 10.75,
+      "distance_30pct": 7.04,
+      "trigger_50pct": 15.09,
+      "distance_50pct": 11.38
+    },
+    {
+      "feature": "HOUST_YOY",
+      "category": "Housing",
+      "current_value": -2.1370670596904895,
+      "std_dev": 20.402702906652095,
+      "prob_minus_1sd": 21.917200151781607,
+      "prob_plus_1sd": 2.4217476680200862,
+      "impact_pp": -19.49545248376152,
+      "trigger_30pct": -31.07,
+      "distance_30pct": -28.93,
+      "trigger_50pct": -48.93,
+      "distance_50pct": -46.79
     }
   ],
-  "adverse_scenario_probability": 98.16,
+  "adverse_scenario_probability": 98.63,
   "sign_warnings": [],
   "model_metadata": {
     "training_observations": 572,
     "training_start": "1976-08",
     "training_end": "2025-02",
-    "pseudo_r2": 0.3987,
+    "pseudo_r2": 0.4198,
     "target_definition": "point"
   },
   "charts": [
