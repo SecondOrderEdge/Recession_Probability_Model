@@ -172,13 +172,13 @@ The notebook reports five metrics for each model:
 
 ## Daily Automated Reports
 
-The model can run automatically on a daily schedule via GitHub Actions, with Claude API generating a narrative email briefing.
+The model runs automatically every Monday morning via GitHub Actions, with Claude API generating a narrative email briefing with embedded charts. Most FRED series update monthly, so a weekly cadence captures new data releases without wasting API credits on unchanged data.
 
 ### How it works
 
-1. **`automation/daily_report.py`** — Fetches latest FRED data, runs BIC feature selection, fits the probit, computes bootstrap CIs and sensitivity analysis, generates charts, and outputs a `daily_summary.json`
-2. **`automation/generate_email.py`** — Sends the summary + charts to Claude API, which analyzes the output and writes a professional HTML email briefing for the investment committee
-3. **`.github/workflows/daily_recession_report.yml`** — Runs both scripts at 9:00 AM ET every weekday, sends the email via SendGrid, and commits the updated summary
+1. **`automation/daily_report.py`** — Fetches latest FRED data, runs BIC feature selection, fits the probit, computes bootstrap CIs and sensitivity analysis, generates 7 charts, and outputs a `daily_summary.json`
+2. **`automation/generate_email.py`** — Sends the summary + charts to Claude API, which writes a substantive HTML email briefing with charts embedded inline within each section
+3. **`.github/workflows/daily_recession_report.yml`** — Runs both scripts Monday at 9:00 AM ET, sends the email via Gmail SMTP, and commits the updated summary
 
 ### Setup
 

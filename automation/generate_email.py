@@ -49,8 +49,21 @@ def generate_analysis(summary):
     client = anthropic.Anthropic()
 
     # Build the prompt
-    prompt = f"""You are a senior macro strategist writing a daily recession probability
-briefing for an investment committee. Based on the model output and attached charts below,
+    run_date = summary.get("run_date", datetime.now().strftime("%Y-%m-%d"))
+    data_date = summary.get("data_through", "unknown")
+
+    prompt = f"""You are a senior macro strategist writing a weekly recession probability
+briefing for an investment committee.
+
+TODAY'S DATE: {run_date}
+DATA THROUGH: {data_date}
+
+IMPORTANT: All references to time must be grounded in today's date ({run_date}).
+Do not reference future months that haven't happened yet. When discussing what to
+watch, reference the NEXT data releases relative to {run_date} (e.g. if today is
+April 2026, the next jobs report is in May 2026, not November).
+
+Based on the model output and attached charts below,
 write a substantive, visually-integrated email briefing.
 
 You have 7 charts available. Reference them in your HTML using <img src="cid:chart_0">
