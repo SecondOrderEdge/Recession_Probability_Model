@@ -1,8 +1,10 @@
 # U.S. Recession Probability Model — 12-Month Ahead
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SecondOrderEdge/Recession_Probability_Model/blob/main/Recession_Probability_Model.ipynb)
+[![GitHub stars](https://img.shields.io/github/stars/SecondOrderEdge/Recession_Probability_Model?style=social)](https://github.com/SecondOrderEdge/Recession_Probability_Model/stargazers)
 [![Weekly Report](https://github.com/SecondOrderEdge/Recession_Probability_Model/actions/workflows/daily_recession_report.yml/badge.svg)](https://github.com/SecondOrderEdge/Recession_Probability_Model/actions/workflows/daily_recession_report.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 
 A five-model ensemble that estimates the probability of a U.S. recession occurring within the next 12 months, using 37 FRED indicators across eight macroeconomic categories. Generates an automated weekly investment committee briefing with embedded charts via Claude API.
 
