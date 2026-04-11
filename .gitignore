@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets — never commit these
+.env
+*.key
+credentials.json
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Output files (charts are regenerated daily)
+automation/output/*.png
+automation/output/*.html
+automation/output/email_result.json
+
+# Keep the summary JSON (tracked for history)
+!automation/output/daily_summary.json

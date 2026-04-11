@@ -1,0 +1,62 @@
+name: Daily Recession Probability Report
+
+on:
+  schedule:
+    # Run at 9:00 AM ET (14:00 UTC) every weekday
+    - cron: "0 14 * * 1-5"
+  workflow_dispatch:
+    # Allow manual trigger from GitHub Actions UI
+
+permissions:
+  contents: write
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run daily report
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: python automation/daily_report.py
+
+      - name: Generate email via Claude API
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python automation/generate_email.py
+
+      - name: Send email
+        if: env.SENDGRID_API_KEY != ''
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+        run: echo "Email sent in previous step (SendGrid configured)"
+
+      - name: Upload report artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: recession-report-${{ github.run_id }}
+          path: automation/output/
+          retention-days: 90
+
+      - name: Commit updated output
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add automation/output/daily_summary.json
+          git diff --staged --quiet || git commit -m "Update daily recession probability — $(date +%Y-%m-%d)"
+          git push
