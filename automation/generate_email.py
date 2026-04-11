@@ -116,7 +116,11 @@ Write the email with these sections:
 4. **Model Divergence Analysis** — If models disagree (e.g. NY Fed at 19% vs BIC at 0.3%),
    explain the economic logic behind the divergence. What is the yield curve telling us that
    the multi-variable model is overriding? Is the multi-variable model right to discount
-   the yield curve signal, or is it being complacent?
+   the yield curve signal, or is it being complacent? Include the following limitation note
+   verbatim in the Model Divergence section: "Note: the model assigns a negative coefficient
+   to inflation, reflecting the historical pattern where demand-collapse recessions are preceded
+   by disinflation — this may understate stagflation risk in the current tariff environment
+   where inflation and growth weakness could occur simultaneously."
 
 5. **Watchlist — What to Monitor** — The sensitivity data now includes TRIGGER LEVELS:
    the exact value each indicator would need to reach to push the model probability to
@@ -139,6 +143,15 @@ Write the email with these sections:
    risk." Reference the specific trigger levels from the watchlist: "The nearest trigger is
    [indicator] at [value], currently [distance] away. Until [condition], maintain current
    positioning." What would change the recommendation next week?
+
+   Immediately before the Bottom Line paragraph, insert a DATA CURRENCY NOTICE block.
+   Use the "data_through" and "lagged_series" fields from the JSON. Format it as a gray
+   bordered box with this exact structure:
+   "Data Currency Notice: This briefing reflects FRED data available through [data_through].
+   The following series have publication lags exceeding 30 days and will update on their next
+   FRED vintage release: [comma-separated lagged_series list, or 'None' if empty]. Conditions
+   may have changed materially since the data cutoff. Model probabilities will refresh
+   automatically on next scheduled run."
 
 Format the email body as clean HTML suitable for email clients. Use inline CSS only.
 Target length: 800-1200 words. This is a substantive analytical memo, not a dashboard summary.

@@ -631,6 +631,16 @@ def run():
     else:
         data_date = predict_df.index[-1].strftime("%Y-%m")
 
+    # Identify series with publication lags > 30 days from run date
+    lagged_series = []
+    run_dt = pd.Timestamp(run_date)
+    for feat, last_dt in bic_last_dates.items():
+        lag_days = (run_dt - last_dt).days
+        if lag_days > 30:
+            lagged_series.append(f"{feat} (last: {last_dt.strftime('%Y-%m')})")
+    if lagged_series:
+        print(f"Lagged series (>30 days): {lagged_series}")
+
     model_probs = {}
     for name, m in models.items():
         feats = m["features"]
@@ -820,6 +830,7 @@ def run():
     summary = {
         "run_date": run_date,
         "data_through": data_date,
+        "lagged_series": lagged_series,
         "ensemble_probability": round(ensemble_prob, 2),
         "bic_probability": round(bic_prob, 2),
         "ci_lower": round(ci_lower, 2),
