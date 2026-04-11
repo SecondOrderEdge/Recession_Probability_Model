@@ -190,15 +190,16 @@ The model can run automatically on a daily schedule via GitHub Actions, with Cla
    |--------|----------|-------------|
    | `FRED_API_KEY` | Yes | Free key from https://fred.stlouisfed.org/docs/api/fred/ |
    | `ANTHROPIC_API_KEY` | Yes | Claude API key from https://console.anthropic.com/ |
-   | `SENDGRID_API_KEY` | No | SendGrid API key for email delivery |
+   | `MAIL_USERNAME` | No | Gmail address for sending reports |
+   | `MAIL_PASSWORD` | No | Gmail app password (from https://myaccount.google.com/apppasswords) |
+   | `MAIL_PORT` | No | SMTP port, typically `587` |
    | `EMAIL_TO` | No | Recipient email(s), comma-separated |
-   | `EMAIL_FROM` | No | Sender email address |
 
 3. **Enable the workflow**: Go to Actions tab > "Daily Recession Probability Report" > Enable
 
 4. **Test manually**: Click "Run workflow" to trigger immediately
 
-Without SendGrid configured, the email is saved as an HTML file in the workflow artifacts.
+Without Gmail credentials configured, the email is saved as an HTML file in the workflow artifacts.
 
 ### Running locally
 

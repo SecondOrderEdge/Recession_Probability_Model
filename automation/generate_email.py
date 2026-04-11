@@ -10,9 +10,10 @@ Usage:
 
 Required environment variables:
     ANTHROPIC_API_KEY - Claude API key
-    SENDGRID_API_KEY  - SendGrid API key (optional, for sending)
+    MAIL_USERNAME     - Gmail address (optional, for sending)
+    MAIL_PASSWORD     - Gmail app password (optional, for sending)
+    MAIL_PORT         - SMTP port, typically 587 (optional)
     EMAIL_TO          - Recipient email address(es), comma-separated
-    EMAIL_FROM        - Sender email address
 """
 
 import os
@@ -150,59 +151,55 @@ def embed_charts_in_html(html_body, summary):
 
 
 def send_email(subject, html_body, summary):
-    """Send email via SendGrid with embedded chart images."""
-    try:
-        import sendgrid
-        from sendgrid.helpers.mail import (
-            Mail, Attachment, FileContent, FileName, FileType,
-            Disposition, ContentId,
-        )
-    except ImportError:
-        print("SendGrid not installed. Saving email to file instead.")
+    """Send email via Gmail SMTP with embedded chart images."""
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+    from email.mime.image import MIMEImage
+
+    mail_username = os.environ.get("MAIL_USERNAME")
+    mail_password = os.environ.get("MAIL_PASSWORD")
+    mail_port = int(os.environ.get("MAIL_PORT", "587"))
+    email_to = os.environ.get("EMAIL_TO", "")
+
+    if not mail_username or not mail_password:
+        print("MAIL_USERNAME/MAIL_PASSWORD not set. Saving email to file instead.")
         save_email_to_file(subject, html_body)
         return
 
-    sg_key = os.environ.get("SENDGRID_API_KEY")
-    if not sg_key:
-        print("SENDGRID_API_KEY not set. Saving email to file instead.")
-        save_email_to_file(subject, html_body)
-        return
-
-    email_to = os.environ.get("EMAIL_TO", "").split(",")
-    email_from = os.environ.get("EMAIL_FROM", "recession-model@noreply.com")
-
-    if not email_to or not email_to[0]:
+    if not email_to:
         print("EMAIL_TO not set. Saving email to file instead.")
         save_email_to_file(subject, html_body)
         return
 
-    sg = sendgrid.SendGridAPIClient(api_key=sg_key)
+    recipients = [addr.strip() for addr in email_to.split(",") if addr.strip()]
 
-    message = Mail(
-        from_email=email_from,
-        to_emails=email_to,
-        subject=subject,
-        html_content=html_body,
-    )
+    # Build MIME message
+    msg = MIMEMultipart("related")
+    msg["Subject"] = subject
+    msg["From"] = mail_username
+    msg["To"] = ", ".join(recipients)
+
+    # Attach HTML body
+    msg.attach(MIMEText(html_body, "html"))
 
     # Attach charts as inline images
     for i, chart_name in enumerate(summary.get("charts", [])):
         chart_path = OUTPUT_DIR / chart_name
         if chart_path.exists():
             with open(chart_path, "rb") as f:
-                img_data = base64.b64encode(f.read()).decode()
-            attachment = Attachment(
-                FileContent(img_data),
-                FileName(chart_name),
-                FileType("image/png"),
-                Disposition("inline"),
-                ContentId(f"chart_{i}"),
-            )
-            message.add_attachment(attachment)
+                img = MIMEImage(f.read(), _subtype="png")
+            img.add_header("Content-ID", f"<chart_{i}>")
+            img.add_header("Content-Disposition", "inline", filename=chart_name)
+            msg.attach(img)
 
+    # Send via SMTP
     try:
-        response = sg.send(message)
-        print(f"Email sent. Status: {response.status_code}")
+        with smtplib.SMTP("smtp.gmail.com", mail_port) as server:
+            server.starttls()
+            server.login(mail_username, mail_password)
+            server.sendmail(mail_username, recipients, msg.as_string())
+        print(f"Email sent to {recipients}")
     except Exception as e:
         print(f"Email send failed: {e}")
         save_email_to_file(subject, html_body)

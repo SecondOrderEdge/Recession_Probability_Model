@@ -35,18 +35,14 @@ jobs:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: python automation/daily_report.py
 
-      - name: Generate email via Claude API
+      - name: Generate email via Claude API and send
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python automation/generate_email.py
-
-      - name: Send email
-        if: env.SENDGRID_API_KEY != ''
-        env:
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_PORT: ${{ secrets.MAIL_PORT }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
-          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
-        run: echo "Email sent in previous step (SendGrid configured)"
+        run: python automation/generate_email.py
 
       - name: Upload report artifacts
         uses: actions/upload-artifact@v4
