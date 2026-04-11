@@ -553,6 +553,41 @@ def run():
     res_bic = sm.Probit(y, X_bic).fit(disp=False, method="bfgs", maxiter=500)
     models["BIC-Selected"] = {"model": res_bic, "features": bic_selected}
 
+    # Coefficient table diagnostic
+    print("\nBIC-Selected coefficient table:")
+    print(f"  {'Feature':<20s} {'Coef':>10s} {'Std Err':>10s} {'z':>8s} {'p-value':>10s}")
+    print("  " + "-" * 58)
+    for k in range(len(res_bic.params)):
+        name = res_bic.params.index[k]
+        print(f"  {name:<20s} {res_bic.params.iloc[k]:>10.4f} {res_bic.bse.iloc[k]:>10.4f} {res_bic.tvalues.iloc[k]:>8.2f} {res_bic.pvalues.iloc[k]:>10.4f}")
+
+    # Coefficient sign checks
+    sign_warnings = []
+    if "UMCSENT" in bic_selected:
+        umcsent_coef = res_bic.params[bic_selected.index("UMCSENT") + 1]
+        if umcsent_coef > 0:
+            msg = (f"WARNING: UMCSENT has positive coefficient ({umcsent_coef:.4f}) — "
+                   "higher sentiment predicts higher recession risk. "
+                   "This is economically counterintuitive and may indicate model misspecification.")
+            print(f"\n  *** {msg}")
+            sign_warnings.append(msg)
+    if "SPREAD" in bic_selected:
+        spread_coef = res_bic.params[bic_selected.index("SPREAD") + 1]
+        if spread_coef > 0:
+            msg = (f"WARNING: SPREAD has positive coefficient ({spread_coef:.4f}) — "
+                   "model says higher spread = higher recession risk. "
+                   "Expected negative. Model may be misspecified.")
+            print(f"\n  *** {msg}")
+            sign_warnings.append(msg)
+    if "UNRATE_CHG3" in bic_selected:
+        unchg_coef = res_bic.params[bic_selected.index("UNRATE_CHG3") + 1]
+        if unchg_coef < 0:
+            msg = (f"WARNING: UNRATE_CHG3 has negative coefficient ({unchg_coef:.4f}) — "
+                   "model says rising unemployment = lower recession risk. "
+                   "Expected positive. Model may be misspecified.")
+            print(f"\n  *** {msg}")
+            sign_warnings.append(msg)
+
     # 6. Generate predictions on latest data
     latest_vals = predict_df[bic_selected].iloc[-1].astype(float).values
     latest_xc = np.concatenate([[1.0], latest_vals])
@@ -595,9 +630,12 @@ def run():
         cp_val = data["RECPROUSM156N"].dropna().iloc[-1]
         model_probs["Chauvet-Piger"] = float(cp_val)
 
-    print(f"\nCurrent probability (BIC-Selected): {bic_prob:.2f}%")
-    for name, p in model_probs.items():
-        print(f"  {name}: {p:.1f}%")
+    # Ensemble: equal-weighted average of all model probabilities
+    ensemble_prob = np.mean(list(model_probs.values()))
+    print(f"\nEnsemble probability: {ensemble_prob:.2f}% (avg of {len(model_probs)} models)")
+    for name, p in sorted(model_probs.items(), key=lambda x: x[1], reverse=True):
+        print(f"  {name:<28s}: {p:.1f}%")
+    print(f"  {'BIC-Selected (direct)':<28s}: {bic_prob:.1f}%")
 
     # 7. Bootstrap CI
     print("\nRunning bootstrap (500 iterations)...")
@@ -705,7 +743,7 @@ def run():
 
     # 9. Generate charts
     print("\nGenerating charts...")
-    generate_gauge_chart(bic_prob, OUTPUT_DIR / "recession_probability_gauge.png")
+    generate_gauge_chart(ensemble_prob, OUTPUT_DIR / "recession_probability_gauge.png")
 
     # Fitted probabilities for history chart
     X_pred_full = sm.add_constant(predict_df[bic_selected].dropna().astype(float))
@@ -730,9 +768,9 @@ def run():
                                OUTPUT_DIR / "probability_trend.png")
 
     # 10. Determine signal level
-    if bic_prob > THRESHOLD_ELEVATED:
+    if ensemble_prob > THRESHOLD_ELEVATED:
         signal = "HIGH"
-    elif bic_prob > THRESHOLD_WARNING:
+    elif ensemble_prob > THRESHOLD_WARNING:
         signal = "ELEVATED"
     else:
         signal = "LOW"
@@ -751,6 +789,7 @@ def run():
     summary = {
         "run_date": run_date,
         "data_through": data_date,
+        "ensemble_probability": round(ensemble_prob, 2),
         "bic_probability": round(bic_prob, 2),
         "ci_lower": round(ci_lower, 2),
         "ci_upper": round(ci_upper, 2),
@@ -768,6 +807,7 @@ def run():
         },
         "sensitivity": scenario_data,
         "adverse_scenario_probability": round(adverse_prob, 2),
+        "sign_warnings": sign_warnings,
         "model_metadata": {
             "training_observations": len(model_df),
             "training_start": model_df.index.min().strftime("%Y-%m"),
@@ -791,7 +831,7 @@ def run():
         json.dump(summary, f, indent=2)
 
     print(f"\nSummary written to {summary_path}")
-    print(f"Signal: {signal} | Probability: {bic_prob:.2f}% [{ci_lower:.1f}%, {ci_upper:.1f}%]")
+    print(f"Signal: {signal} | Ensemble: {ensemble_prob:.2f}% | BIC: {bic_prob:.2f}% [{ci_lower:.1f}%, {ci_upper:.1f}%]")
     print("Done.")
     return summary
 
