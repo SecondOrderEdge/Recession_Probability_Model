@@ -170,6 +170,69 @@ The notebook reports five metrics for each model:
 
 ---
 
+## Daily Automated Reports
+
+The model can run automatically on a daily schedule via GitHub Actions, with Claude API generating a narrative email briefing.
+
+### How it works
+
+1. **`automation/daily_report.py`** — Fetches latest FRED data, runs BIC feature selection, fits the probit, computes bootstrap CIs and sensitivity analysis, generates charts, and outputs a `daily_summary.json`
+2. **`automation/generate_email.py`** — Sends the summary + charts to Claude API, which analyzes the output and writes a professional HTML email briefing for the investment committee
+3. **`.github/workflows/daily_recession_report.yml`** — Runs both scripts at 9:00 AM ET every weekday, sends the email via SendGrid, and commits the updated summary
+
+### Setup
+
+1. **Fork this repository**
+
+2. **Add GitHub Secrets** (Settings > Secrets and variables > Actions):
+
+   | Secret | Required | Description |
+   |--------|----------|-------------|
+   | `FRED_API_KEY` | Yes | Free key from https://fred.stlouisfed.org/docs/api/fred/ |
+   | `ANTHROPIC_API_KEY` | Yes | Claude API key from https://console.anthropic.com/ |
+   | `SENDGRID_API_KEY` | No | SendGrid API key for email delivery |
+   | `EMAIL_TO` | No | Recipient email(s), comma-separated |
+   | `EMAIL_FROM` | No | Sender email address |
+
+3. **Enable the workflow**: Go to Actions tab > "Daily Recession Probability Report" > Enable
+
+4. **Test manually**: Click "Run workflow" to trigger immediately
+
+Without SendGrid configured, the email is saved as an HTML file in the workflow artifacts.
+
+### Running locally
+
+```bash
+export FRED_API_KEY="your-key"
+export ANTHROPIC_API_KEY="your-key"
+
+pip install -r requirements.txt
+python automation/daily_report.py
+python automation/generate_email.py
+```
+
+Output files are written to `automation/output/`.
+
+---
+
+## Project Structure
+
+```
+Recession_Probability_Model/
+├── Recession_Probability_Model.ipynb  # Interactive notebook (Google Colab)
+├── automation/
+│   ├── daily_report.py                # Daily model run + chart generation
+│   ├── generate_email.py              # Claude API email composition
+│   └── output/                        # Generated charts, summaries, emails
+├── .github/workflows/
+│   └── daily_recession_report.yml     # GitHub Actions daily schedule
+├── requirements.txt                   # Python dependencies
+├── LICENSE                            # MIT License
+└── README.md
+```
+
+---
+
 ## Dependencies
 
 | Package | Purpose |
@@ -181,6 +244,8 @@ The notebook reports five metrics for each model:
 | `pandas` | Data manipulation and time series alignment |
 | `numpy` | Numerical operations |
 | `scipy` | Normal CDF for Estrella-Mishkin closed-form estimate |
+| `anthropic` | Claude API for email narrative generation |
+| `sendgrid` | Email delivery (optional) |
 
 ---
 
