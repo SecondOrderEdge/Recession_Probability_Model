@@ -58,6 +58,10 @@ briefing for an investment committee.
 TODAY'S DATE: {run_date}
 DATA THROUGH: {data_date}
 
+IMPORTANT FORMATTING: Include a visible "Data Through: {data_date}" line at the very top
+of the email body, immediately below the report title and date. This tells the reader how
+current the underlying data is. Format it prominently — not buried in fine print.
+
 IMPORTANT: All references to time must be grounded in today's date ({run_date}).
 Do not reference future months that haven't happened yet. When discussing what to
 watch, reference the NEXT data releases relative to {run_date} (e.g. if today is

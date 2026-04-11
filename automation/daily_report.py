@@ -204,6 +204,7 @@ SIGN_CONSTRAINTS = {
     "SPREAD": "negative",       # lower spread = higher recession risk
     "UNRATE_CHG3": "positive",  # rising unemployment = higher recession risk
     "UMCSENT": "negative",      # lower sentiment = higher recession risk
+    "BUSLOANS_YOY": "negative", # credit contraction = higher recession risk
 }
 
 
@@ -485,13 +486,17 @@ def generate_sparklines(bic_selected, data, feat_to_cat, output_path):
     plt.close()
 
 
-def generate_probability_trend(fitted_full, output_path):
-    """Generate 12-month trailing probability trend chart."""
-    recent = fitted_full.tail(24) * 100
+def generate_probability_trend(ensemble_series, bic_series, output_path):
+    """Generate 24-month trailing probability trend chart (ensemble primary)."""
+    recent = ensemble_series.tail(24) * 100
+    bic_recent = bic_series.tail(24) * 100
 
     fig, ax = plt.subplots(figsize=(10, 3))
-    ax.plot(recent.index, recent.values, color="#1a1a2e", linewidth=2)
+    ax.plot(recent.index, recent.values, color="#1a1a2e", linewidth=2,
+            label="5-Model Ensemble")
     ax.fill_between(recent.index, 0, recent.values, alpha=0.15, color="#1a1a2e")
+    ax.plot(bic_recent.index, bic_recent.values, color="#aec7e8", linewidth=1,
+            linestyle="--", label="BIC-Selected")
 
     ax.axhline(y=THRESHOLD_WARNING, color="orange", linestyle=":", alpha=0.5,
                label=f"{THRESHOLD_WARNING}% warning")
@@ -505,7 +510,8 @@ def generate_probability_trend(fitted_full, output_path):
                 xytext=(-40, 15), textcoords="offset points",
                 arrowprops=dict(arrowstyle="->", color="#1a1a2e"))
 
-    ax.set_ylim(0, max(recent.max() * 1.5, THRESHOLD_WARNING + 5))
+    all_vals = pd.concat([recent, bic_recent])
+    ax.set_ylim(0, max(all_vals.max() * 1.5, THRESHOLD_WARNING + 5))
     ax.set_ylabel("Probability (%)")
     ax.set_title("Probability Trend (Is Risk Rising or Falling?)", fontsize=13, fontweight="bold")
     ax.legend(fontsize=9)
@@ -776,7 +782,20 @@ def run():
     generate_sparklines(bic_selected, data, feat_to_cat,
                         OUTPUT_DIR / "indicator_trends.png")
 
-    generate_probability_trend(fitted_full,
+    # Build ensemble probability series for the trend chart
+    ensemble_series = pd.Series(index=fitted_full.index, dtype=float)
+    for dt in fitted_full.index:
+        probs_at_dt = []
+        for name, m in models.items():
+            feats = m["features"]
+            if all(f in predict_df.columns for f in feats) and dt in predict_df.index:
+                x = predict_df.loc[dt, feats].astype(float).values
+                xc = np.concatenate([[1.0], x])
+                probs_at_dt.append(stats.norm.cdf(xc @ m["model"].params.values))
+        if probs_at_dt:
+            ensemble_series[dt] = np.mean(probs_at_dt)
+
+    generate_probability_trend(ensemble_series, fitted_full,
                                OUTPUT_DIR / "probability_trend.png")
 
     # 10. Determine signal level
