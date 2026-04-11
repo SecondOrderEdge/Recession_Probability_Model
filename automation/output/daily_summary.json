@@ -118,6 +118,10 @@
   },
   "charts": [
     "recession_probability_gauge.png",
+    "probability_trend.png",
+    "indicator_percentiles.png",
+    "model_comparison.png",
+    "indicator_trends.png",
     "recession_probability_history.png",
     "sensitivity_chart.png"
   ]
