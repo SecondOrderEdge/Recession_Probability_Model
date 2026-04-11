@@ -144,6 +144,27 @@
   ],
   "adverse_scenario_probability": 98.63,
   "sign_warnings": [],
+  "trend_attribution": {
+    "prob_24m_ago": 3.77,
+    "prob_current": 8.47,
+    "prob_change_pp": 4.7,
+    "partial_effects": {
+      "SPREAD": -4.6281,
+      "HSN1F_YOY": 0.295,
+      "FEDFUNDS": -3.1911,
+      "CPILFESL_YOY": 4.2625,
+      "PPIACO_YOY": 9.9158,
+      "HOUST_YOY": -1.957
+    },
+    "top_improvement": {
+      "feature": "SPREAD",
+      "effect_pp": -4.6281
+    },
+    "top_risk": {
+      "feature": "PPIACO_YOY",
+      "effect_pp": 9.9158
+    }
+  },
   "model_metadata": {
     "training_observations": 572,
     "training_start": "1976-08",
