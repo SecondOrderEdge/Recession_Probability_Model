@@ -564,7 +564,7 @@ def run():
     # Coefficient sign checks
     sign_warnings = []
     if "UMCSENT" in bic_selected:
-        umcsent_coef = res_bic.params[bic_selected.index("UMCSENT") + 1]
+        umcsent_coef = res_bic.params["UMCSENT"]
         if umcsent_coef > 0:
             msg = (f"WARNING: UMCSENT has positive coefficient ({umcsent_coef:.4f}) — "
                    "higher sentiment predicts higher recession risk. "
@@ -572,7 +572,7 @@ def run():
             print(f"\n  *** {msg}")
             sign_warnings.append(msg)
     if "SPREAD" in bic_selected:
-        spread_coef = res_bic.params[bic_selected.index("SPREAD") + 1]
+        spread_coef = res_bic.params["SPREAD"]
         if spread_coef > 0:
             msg = (f"WARNING: SPREAD has positive coefficient ({spread_coef:.4f}) — "
                    "model says higher spread = higher recession risk. "
@@ -580,7 +580,7 @@ def run():
             print(f"\n  *** {msg}")
             sign_warnings.append(msg)
     if "UNRATE_CHG3" in bic_selected:
-        unchg_coef = res_bic.params[bic_selected.index("UNRATE_CHG3") + 1]
+        unchg_coef = res_bic.params["UNRATE_CHG3"]
         if unchg_coef < 0:
             msg = (f"WARNING: UNRATE_CHG3 has negative coefficient ({unchg_coef:.4f}) — "
                    "model says rising unemployment = lower recession risk. "
