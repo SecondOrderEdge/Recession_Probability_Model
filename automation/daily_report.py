@@ -327,6 +327,149 @@ def generate_sensitivity_chart(bic_selected, model_params, baseline_x, model_df,
     return scenario_data
 
 
+def generate_percentile_chart(bic_selected, latest_vals, model_df, feat_to_cat, output_path):
+    """Generate horizontal bar chart showing each indicator's historical percentile."""
+    pctiles = []
+    labels = []
+    for j, feat in enumerate(bic_selected):
+        pct = (model_df[feat] < latest_vals[j]).mean() * 100
+        pctiles.append(pct)
+        cat = feat_to_cat.get(feat, "")
+        labels.append(f"{feat}\n({cat})")
+
+    fig, ax = plt.subplots(figsize=(10, max(3.5, len(bic_selected) * 0.7)))
+
+    colors = []
+    for p in pctiles:
+        if p <= 10 or p >= 90:
+            colors.append("#d62728")  # red = extreme
+        elif p <= 25 or p >= 75:
+            colors.append("#ff7f0e")  # orange = notable
+        else:
+            colors.append("#2ca02c")  # green = normal
+
+    bars = ax.barh(labels, pctiles, color=colors, edgecolor="white", linewidth=0.5)
+    ax.axvline(x=50, color="gray", linestyle="--", alpha=0.4, label="Median")
+    ax.axvline(x=10, color="red", linestyle=":", alpha=0.3)
+    ax.axvline(x=90, color="red", linestyle=":", alpha=0.3)
+
+    for bar, pct in zip(bars, pctiles):
+        ax.text(bar.get_width() + 1.5, bar.get_y() + bar.get_height() / 2,
+                f"{pct:.0f}th", va="center", fontsize=9, fontweight="bold")
+
+    ax.set_xlim(0, 105)
+    ax.set_xlabel("Historical Percentile")
+    ax.set_title("Indicator Dashboard: Where Are We Historically?", fontsize=13, fontweight="bold")
+    ax.legend(fontsize=9)
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches="tight", facecolor="white")
+    plt.close()
+
+
+def generate_model_comparison_chart(model_probs, output_path):
+    """Generate horizontal bar chart comparing all model probabilities."""
+    names = list(model_probs.keys())
+    probs = list(model_probs.values())
+
+    # Sort by probability
+    sorted_pairs = sorted(zip(names, probs), key=lambda x: x[1])
+    names = [p[0] for p in sorted_pairs]
+    probs = [p[1] for p in sorted_pairs]
+
+    fig, ax = plt.subplots(figsize=(10, max(2.5, len(names) * 0.55)))
+    colors = ["#1f77b4" if n == "BIC-Selected" else "#aec7e8" for n in names]
+    bars = ax.barh(names, probs, color=colors, edgecolor="white")
+
+    for bar, p in zip(bars, probs):
+        ax.text(bar.get_width() + 0.3, bar.get_y() + bar.get_height() / 2,
+                f"{p:.1f}%", va="center", fontsize=10, fontweight="bold")
+
+    ax.axvline(x=THRESHOLD_WARNING, color="orange", linestyle=":", alpha=0.5,
+               label=f"{THRESHOLD_WARNING}% warning")
+    ax.set_xlabel("Recession Probability (%)")
+    ax.set_title("Model Comparison: Do They Agree?", fontsize=13, fontweight="bold")
+    ax.set_xlim(0, max(max(probs) * 1.4, THRESHOLD_WARNING + 5))
+    ax.legend(fontsize=9)
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches="tight", facecolor="white")
+    plt.close()
+
+
+def generate_sparklines(bic_selected, data, feat_to_cat, output_path):
+    """Generate 12-month trailing sparklines for each BIC-selected indicator."""
+    n_feats = len(bic_selected)
+    fig, axes = plt.subplots(n_feats, 1, figsize=(10, n_feats * 1.4), sharex=True)
+    if n_feats == 1:
+        axes = [axes]
+
+    for ax, feat in zip(axes, bic_selected):
+        series = data[feat].dropna().tail(24)  # 24 months of context
+        if len(series) < 2:
+            continue
+
+        # Color based on direction: last 3 months trend
+        recent = series.tail(3)
+        if len(recent) >= 2:
+            trend = recent.iloc[-1] - recent.iloc[0]
+        else:
+            trend = 0
+
+        color = "#d62728" if trend > 0 and feat in ["UNRATE_CHG3", "PPIACO_YOY", "UMCSENT"] else \
+                "#d62728" if trend < 0 and feat in ["SPREAD", "HSN1F_YOY", "CIVPART"] else \
+                "#2ca02c"
+
+        ax.plot(series.index, series.values, color=color, linewidth=1.5)
+        ax.fill_between(series.index, series.values, alpha=0.1, color=color)
+
+        # Current value annotation
+        ax.annotate(f"{series.iloc[-1]:.1f}", xy=(series.index[-1], series.iloc[-1]),
+                    fontsize=9, fontweight="bold", color=color,
+                    xytext=(5, 0), textcoords="offset points")
+
+        cat = feat_to_cat.get(feat, "")
+        ax.set_ylabel(feat, fontsize=8, rotation=0, ha="right", va="center")
+        ax.tick_params(axis="y", labelsize=7)
+        ax.grid(True, alpha=0.1)
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+
+    axes[0].set_title("Indicator Trends (Trailing 24 Months)", fontsize=13, fontweight="bold")
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches="tight", facecolor="white")
+    plt.close()
+
+
+def generate_probability_trend(fitted_full, output_path):
+    """Generate 12-month trailing probability trend chart."""
+    recent = fitted_full.tail(24) * 100
+
+    fig, ax = plt.subplots(figsize=(10, 3))
+    ax.plot(recent.index, recent.values, color="#1a1a2e", linewidth=2)
+    ax.fill_between(recent.index, 0, recent.values, alpha=0.15, color="#1a1a2e")
+
+    ax.axhline(y=THRESHOLD_WARNING, color="orange", linestyle=":", alpha=0.5,
+               label=f"{THRESHOLD_WARNING}% warning")
+    ax.axhline(y=THRESHOLD_ELEVATED, color="red", linestyle="--", alpha=0.3,
+               label=f"{THRESHOLD_ELEVATED}% elevated")
+
+    # Annotate latest
+    ax.annotate(f"{recent.iloc[-1]:.1f}%",
+                xy=(recent.index[-1], recent.iloc[-1]),
+                fontsize=12, fontweight="bold", color="#1a1a2e",
+                xytext=(-40, 15), textcoords="offset points",
+                arrowprops=dict(arrowstyle="->", color="#1a1a2e"))
+
+    ax.set_ylim(0, max(recent.max() * 1.5, THRESHOLD_WARNING + 5))
+    ax.set_ylabel("Probability (%)")
+    ax.set_title("Probability Trend (Is Risk Rising or Falling?)", fontsize=13, fontweight="bold")
+    ax.legend(fontsize=9)
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%b '%y"))
+    ax.grid(True, alpha=0.12)
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches="tight", facecolor="white")
+    plt.close()
+
+
 def run():
     """Main pipeline."""
     fred_key = os.environ.get("FRED_API_KEY")
@@ -472,6 +615,18 @@ def run():
                                 latest_vals, model_df,
                                 OUTPUT_DIR / "sensitivity_chart.png")
 
+    generate_percentile_chart(bic_selected, latest_vals, model_df, feat_to_cat,
+                              OUTPUT_DIR / "indicator_percentiles.png")
+
+    generate_model_comparison_chart(model_probs,
+                                    OUTPUT_DIR / "model_comparison.png")
+
+    generate_sparklines(bic_selected, data, feat_to_cat,
+                        OUTPUT_DIR / "indicator_trends.png")
+
+    generate_probability_trend(fitted_full,
+                               OUTPUT_DIR / "probability_trend.png")
+
     # 10. Determine signal level
     if bic_prob > THRESHOLD_ELEVATED:
         signal = "HIGH"
@@ -520,6 +675,10 @@ def run():
         },
         "charts": [
             "recession_probability_gauge.png",
+            "probability_trend.png",
+            "indicator_percentiles.png",
+            "model_comparison.png",
+            "indicator_trends.png",
             "recession_probability_history.png",
             "sensitivity_chart.png",
         ],
