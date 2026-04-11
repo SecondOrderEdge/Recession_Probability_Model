@@ -110,10 +110,13 @@ Write the email with these sections:
    the multi-variable model is overriding? Is the multi-variable model right to discount
    the yield curve signal, or is it being complacent?
 
-5. **Risk Assessment** — Go beyond just listing sensitivity numbers. Explain WHAT WOULD
-   CAUSE each indicator to move adversely. E.g. "If producer prices accelerate due to
-   tariff escalation or supply chain disruption, the model probability would rise by 215bp."
-   Identify the 1-2 most plausible risk scenarios currently.
+5. **Watchlist — What to Monitor** — The sensitivity data now includes TRIGGER LEVELS:
+   the exact value each indicator would need to reach to push the model probability to
+   30% (warning) or 50% (elevated). Present this as a concrete watchlist table:
+   "SPREAD would need to fall to X to trigger 30% — that's Y points from here."
+   "UNRATE_CHG3 would need to hit Z — that means unemployment rising X pp."
+   Rank by which triggers are CLOSEST to being hit (smallest distance from current).
+   Explain in plain English what real-world events could cause each move.
 
 6. **Adverse Scenario** — Don't just state the probability. Explain what a simultaneous
    1-SD deterioration across all indicators would look like in plain English: what does
@@ -123,9 +126,10 @@ Write the email with these sections:
    What happened next? Are there any periods in history where the model was similarly
    low but a recession followed anyway?
 
-8. **Bottom Line for the Committee** — 2-3 sentences of actionable guidance. Not just
-   "maintain cautious optimism" but specific: what should the committee watch next month?
-   What would change the recommendation? What allocation implications follow?
+8. **Bottom Line for the Committee** — 2-3 sentences of actionable guidance. Reference
+   the specific trigger levels from the watchlist: "The nearest trigger is [X indicator]
+   at [value], currently [distance] away. Until [specific condition], maintain current
+   positioning." What would change the recommendation next week?
 
 Format the email body as clean HTML suitable for email clients. Use inline CSS only.
 Target length: 800-1200 words. This is a substantive analytical memo, not a dashboard summary.
