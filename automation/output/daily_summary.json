@@ -1,0 +1,124 @@
+{
+  "run_date": "2026-04-11",
+  "data_through": "2025-09",
+  "bic_probability": 0.33,
+  "ci_lower": 0.02,
+  "ci_upper": 1.14,
+  "signal": "LOW",
+  "consensus": "MODERATE",
+  "model_probabilities": {
+    "NY Fed (Spread Only)": 19.48,
+    "Wright (Spread + FF)": 12.89,
+    "BIC-Selected": 0.33,
+    "Estrella-Mishkin": 15.98
+  },
+  "bic_selected_features": [
+    "SPREAD",
+    "HSN1F_YOY",
+    "CIVPART",
+    "PPIACO_YOY",
+    "UNRATE_CHG3",
+    "UMCSENT"
+  ],
+  "indicator_readings": {
+    "SPREAD": {
+      "value": 0.2,
+      "category": "Yields (derived)",
+      "percentile": 16.0
+    },
+    "HSN1F_YOY": {
+      "value": 0.2789,
+      "category": "Housing",
+      "percentile": 44.0
+    },
+    "CIVPART": {
+      "value": 62.5,
+      "category": "Labor",
+      "percentile": 7.0
+    },
+    "PPIACO_YOY": {
+      "value": 3.709,
+      "category": "Inflation",
+      "percentile": 57.0
+    },
+    "UNRATE_CHG3": {
+      "value": 0.1667,
+      "category": "Labor (derived)",
+      "percentile": 72.0
+    },
+    "UMCSENT": {
+      "value": 55.1,
+      "category": "Consumer",
+      "percentile": 1.0
+    }
+  },
+  "sensitivity": [
+    {
+      "feature": "SPREAD",
+      "category": "Yields (derived)",
+      "current_value": 0.20000000000000018,
+      "std_dev": 1.3112982571854181,
+      "prob_down": 2.1874546238876666,
+      "prob_up": 0.032652502319260784,
+      "impact_pp": -2.1548021215684057
+    },
+    {
+      "feature": "HSN1F_YOY",
+      "category": "Housing",
+      "current_value": 0.2789400278939924,
+      "std_dev": 19.531841502652707,
+      "prob_down": 2.164705718127762,
+      "prob_up": 0.033179970711397534,
+      "impact_pp": -2.1315257474163642
+    },
+    {
+      "feature": "CIVPART",
+      "category": "Labor",
+      "current_value": 62.5,
+      "std_dev": 1.7104298431945588,
+      "prob_down": 0.17220184890575355,
+      "prob_up": 0.6209550295447694,
+      "impact_pp": 0.4487531806390159
+    },
+    {
+      "feature": "PPIACO_YOY",
+      "category": "Inflation",
+      "current_value": 3.709009743472036,
+      "std_dev": 5.835101766930696,
+      "prob_down": 0.03274976574725129,
+      "prob_up": 2.1832190380771817,
+      "impact_pp": 2.1504692723299303
+    },
+    {
+      "feature": "UNRATE_CHG3",
+      "category": "Labor (derived)",
+      "current_value": 0.16666666666666607,
+      "std_dev": 1.3722462821945671,
+      "prob_down": 0.04936855713555071,
+      "prob_up": 1.654649459642455,
+      "impact_pp": 1.6052809025069044
+    },
+    {
+      "feature": "UMCSENT",
+      "category": "Consumer",
+      "current_value": 55.1,
+      "std_dev": 13.203365064705242,
+      "prob_down": 0.05827279659870381,
+      "prob_up": 1.4708532155942167,
+      "impact_pp": 1.412580418995513
+    }
+  ],
+  "adverse_scenario_probability": 75.78,
+  "model_metadata": {
+    "training_observations": 572,
+    "training_start": "1976-08",
+    "training_end": "2025-02",
+    "pseudo_r2": 0.4308,
+    "target_definition": "point"
+  },
+  "charts": [
+    "recession_probability_gauge.png",
+    "recession_probability_history.png",
+    "sensitivity_chart.png"
+  ]
+}
