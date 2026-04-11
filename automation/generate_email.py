@@ -58,15 +58,51 @@ MODEL OUTPUT:
 
 Write the email with these sections:
 1. **Subject line** — one line, include the probability and signal level
-2. **Executive Summary** — 2-3 sentences with the headline probability, CI, and consensus
-3. **Key Indicators** — brief table or bullet list of the BIC-selected features with current values and what they mean economically
-4. **What Changed** — note any indicators at extreme percentiles (below 10th or above 90th)
-5. **Sensitivity** — which 1-2 indicators would most change the outlook if they moved
-6. **Adverse Scenario** — what happens if all indicators deteriorate by 1 SD
-7. **Bottom Line** — one sentence actionable takeaway
+
+2. **Executive Summary** (3-5 sentences) — Lead with the headline probability and CI. Explain
+   what the BIC-selected model is measuring (12-month-ahead recession probability via probit
+   regression on FRED macro data). Note the consensus across model specifications and whether
+   they agree or diverge. If they diverge, explain WHY — e.g. the spread-only model sees
+   yield curve risk that the multi-variable model discounts because other indicators are strong.
+
+3. **Key Indicators Deep Dive** — For EACH BIC-selected indicator, provide:
+   - Current value and its historical percentile
+   - What this indicator measures economically and why it matters for recessions
+   - Whether the current reading is bullish, bearish, or neutral for the economy
+   - How it has changed recently (direction of travel, not just level)
+   For example, don't just say "Consumer Sentiment: 55.1, extremely pessimistic." Instead
+   explain: "Consumer sentiment at 55.1 sits at the 1st percentile of its historical range,
+   reflecting deep consumer pessimism. However, sentiment is a notoriously noisy predictor —
+   consumers were similarly pessimistic in 2022 without a recession following. The model
+   assigns this a positive coefficient (higher sentiment = higher recession risk), capturing
+   the pattern that sentiment often peaks in late-cycle expansions before recessions."
+
+4. **Model Divergence Analysis** — If models disagree (e.g. NY Fed at 19% vs BIC at 0.3%),
+   explain the economic logic behind the divergence. What is the yield curve telling us that
+   the multi-variable model is overriding? Is the multi-variable model right to discount
+   the yield curve signal, or is it being complacent?
+
+5. **Risk Assessment** — Go beyond just listing sensitivity numbers. Explain WHAT WOULD
+   CAUSE each indicator to move adversely. E.g. "If producer prices accelerate due to
+   tariff escalation or supply chain disruption, the model probability would rise by 215bp."
+   Identify the 1-2 most plausible risk scenarios currently.
+
+6. **Adverse Scenario** — Don't just state the probability. Explain what a simultaneous
+   1-SD deterioration across all indicators would look like in plain English: what does
+   the economy feel like in that scenario? Is it realistic or a tail risk?
+
+7. **Historical Context** — Briefly note: has the model been at similar levels before?
+   What happened next? Are there any periods in history where the model was similarly
+   low but a recession followed anyway?
+
+8. **Bottom Line for the Committee** — 2-3 sentences of actionable guidance. Not just
+   "maintain cautious optimism" but specific: what should the committee watch next month?
+   What would change the recommendation? What allocation implications follow?
 
 Format the email body as clean HTML suitable for email clients. Use inline CSS only.
-Keep the tone professional but direct — this is for a CIO, not a blog post.
+Target length: 800-1200 words. This is a substantive analytical memo, not a dashboard summary.
+The tone should be that of a senior economist briefing the CIO — authoritative, specific,
+and willing to take a view on where the risks lie.
 Do not use emojis. Use percentage signs and basis points where appropriate.
 
 Return your response as JSON with two keys:
@@ -98,7 +134,7 @@ Return your response as JSON with two keys:
     print("Sending to Claude API for analysis...")
     response = client.messages.create(
         model="claude-sonnet-4-20250514",
-        max_tokens=4096,
+        max_tokens=8192,
         messages=[{"role": "user", "content": content}],
     )
 
