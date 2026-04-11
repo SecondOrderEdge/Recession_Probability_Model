@@ -1,16 +1,16 @@
 {
   "run_date": "2026-04-11",
   "data_through": "2026-01",
-  "ensemble_probability": 9.77,
-  "bic_probability": 0.02,
-  "ci_lower": 0.0,
-  "ci_upper": 0.16,
+  "ensemble_probability": 10.41,
+  "bic_probability": 3.2,
+  "ci_lower": 0.88,
+  "ci_upper": 6.85,
   "signal": "LOW",
   "consensus": "MODERATE",
   "model_probabilities": {
     "NY Fed (Spread Only)": 19.48,
     "Wright (Spread + FF)": 12.89,
-    "BIC-Selected": 0.02,
+    "BIC-Selected": 3.2,
     "Estrella-Mishkin": 15.98,
     "Chauvet-Piger": 0.48
   },
@@ -18,10 +18,9 @@
     "SPREAD",
     "HSN1F_YOY",
     "BUSLOANS_YOY",
-    "UMCSENT",
-    "PPIACO_YOY",
-    "UNRATE_CHG3",
-    "ICSA_YOY"
+    "FEDFUNDS",
+    "UNRATE",
+    "T10Y2Y"
   ],
   "indicator_readings": {
     "SPREAD": {
@@ -39,25 +38,20 @@
       "category": "Banking",
       "percentile": 14.0
     },
-    "UMCSENT": {
-      "value": 55.1,
-      "category": "Consumer",
-      "percentile": 1.0
+    "FEDFUNDS": {
+      "value": 4.22,
+      "category": "Yields",
+      "percentile": 46.0
     },
-    "PPIACO_YOY": {
-      "value": 3.709,
-      "category": "Inflation",
-      "percentile": 57.0
-    },
-    "UNRATE_CHG3": {
-      "value": 0.1667,
-      "category": "Labor (derived)",
-      "percentile": 72.0
-    },
-    "ICSA_YOY": {
-      "value": 4.2316,
+    "UNRATE": {
+      "value": 4.4,
       "category": "Labor",
-      "percentile": 73.0
+      "percentile": 17.0
+    },
+    "T10Y2Y": {
+      "value": 0.56,
+      "category": "Yields",
+      "percentile": 43.0
     }
   },
   "sensitivity": [
@@ -66,102 +60,87 @@
       "category": "Yields (derived)",
       "current_value": 0.20000000000000018,
       "std_dev": 1.3112982571854181,
-      "prob_minus_1sd": 0.18200626079494012,
-      "prob_plus_1sd": 0.0024594553144597635,
-      "impact_pp": -0.17954680548048035,
-      "trigger_30pct": -6.54,
-      "distance_30pct": -6.74,
-      "trigger_50pct": null,
-      "distance_50pct": null
+      "prob_minus_1sd": 6.7599833392272854,
+      "prob_plus_1sd": 1.354508266767033,
+      "impact_pp": -5.405475072460252,
+      "trigger_30pct": -4.66,
+      "distance_30pct": -4.86,
+      "trigger_50pct": -6.58,
+      "distance_50pct": -6.78
     },
     {
       "feature": "HSN1F_YOY",
       "category": "Housing",
       "current_value": 0.2789400278939924,
       "std_dev": 19.531841502652707,
-      "prob_minus_1sd": 0.21346409796196442,
-      "prob_plus_1sd": 0.0019811084993779896,
-      "impact_pp": -0.21148298946258642,
-      "trigger_30pct": -92.04,
-      "distance_30pct": -92.32,
-      "trigger_50pct": -108.4,
-      "distance_50pct": -108.68
+      "prob_minus_1sd": 6.79769651992857,
+      "prob_plus_1sd": 1.3445537041232263,
+      "impact_pp": -5.453142815805343,
+      "trigger_30pct": -71.55,
+      "distance_30pct": -71.83,
+      "trigger_50pct": -99.92,
+      "distance_50pct": -100.2
     },
     {
       "feature": "BUSLOANS_YOY",
       "category": "Banking",
       "current_value": -3.0224349464741063,
       "std_dev": 8.066368903544982,
-      "prob_minus_1sd": 0.0028408953618551183,
-      "prob_plus_1sd": 0.16327715321510985,
-      "impact_pp": 0.16043625785325474,
-      "trigger_30pct": 41.01,
-      "distance_30pct": 44.04,
-      "trigger_50pct": null,
-      "distance_50pct": null
+      "prob_minus_1sd": 0.7517220553309475,
+      "prob_plus_1sd": 10.158430867586754,
+      "impact_pp": 9.406708812255806,
+      "trigger_30pct": 15.46,
+      "distance_30pct": 18.48,
+      "trigger_50pct": 22.76,
+      "distance_50pct": 25.78
     },
     {
-      "feature": "UMCSENT",
-      "category": "Consumer",
-      "current_value": 55.1,
-      "std_dev": 13.203365064705242,
-      "prob_minus_1sd": 0.001458648877686964,
-      "prob_plus_1sd": 0.26567091675132765,
-      "impact_pp": 0.26421226787364066,
-      "trigger_30pct": 111.22,
-      "distance_30pct": 56.12,
-      "trigger_50pct": 121.16,
-      "distance_50pct": 66.06
+      "feature": "FEDFUNDS",
+      "category": "Yields",
+      "current_value": 4.22,
+      "std_dev": 4.003849057736339,
+      "prob_minus_1sd": 0.21241799494493369,
+      "prob_plus_1sd": 19.905052367148052,
+      "impact_pp": 19.69263437220312,
+      "trigger_30pct": 9.5,
+      "distance_30pct": 5.28,
+      "trigger_50pct": 11.58,
+      "distance_50pct": 7.36
     },
     {
-      "feature": "PPIACO_YOY",
-      "category": "Inflation",
-      "current_value": 3.709009743472036,
-      "std_dev": 5.835101766930696,
-      "prob_minus_1sd": 0.002394575501867847,
-      "prob_plus_1sd": 0.18566999653766583,
-      "impact_pp": 0.183275421035798,
-      "trigger_30pct": 33.37,
-      "distance_30pct": 29.67,
-      "trigger_50pct": 38.63,
-      "distance_50pct": 34.92
-    },
-    {
-      "feature": "UNRATE_CHG3",
-      "category": "Labor (derived)",
-      "current_value": 0.16666666666666607,
-      "std_dev": 1.3722462821945671,
-      "prob_minus_1sd": 0.00016502444264331273,
-      "prob_plus_1sd": 1.0277915494435719,
-      "impact_pp": 1.0276265250009287,
-      "trigger_30pct": 3.64,
-      "distance_30pct": 3.48,
-      "trigger_50pct": 4.26,
-      "distance_50pct": 4.09
-    },
-    {
-      "feature": "ICSA_YOY",
+      "feature": "UNRATE",
       "category": "Labor",
-      "current_value": 4.231625835189301,
-      "std_dev": 116.01064332164722,
-      "prob_minus_1sd": 2.1761182108229806,
-      "prob_plus_1sd": 3.738269418343287e-05,
-      "impact_pp": -2.1760808281287973,
-      "trigger_30pct": -230.11,
-      "distance_30pct": -234.34,
-      "trigger_50pct": -271.64,
-      "distance_50pct": -275.87
+      "current_value": 4.4,
+      "std_dev": 1.7700054100980651,
+      "prob_minus_1sd": 18.695621343433416,
+      "prob_plus_1sd": 0.24391997968866047,
+      "impact_pp": -18.451701363744757,
+      "trigger_30pct": 1.96,
+      "distance_30pct": -2.44,
+      "trigger_50pct": 1.0,
+      "distance_50pct": -3.4
+    },
+    {
+      "feature": "T10Y2Y",
+      "category": "Yields",
+      "current_value": 0.56,
+      "std_dev": 0.9287068753519669,
+      "prob_minus_1sd": 0.5805473756469001,
+      "prob_plus_1sd": 11.892631879181565,
+      "impact_pp": 11.312084503534665,
+      "trigger_30pct": 2.4,
+      "distance_30pct": 1.84,
+      "trigger_50pct": 3.12,
+      "distance_50pct": 2.56
     }
   ],
-  "adverse_scenario_probability": 98.5,
-  "sign_warnings": [
-    "WARNING: UMCSENT has positive coefficient (0.0527) \u2014 higher sentiment predicts higher recession risk. This is economically counterintuitive and may indicate model misspecification."
-  ],
+  "adverse_scenario_probability": 98.16,
+  "sign_warnings": [],
   "model_metadata": {
     "training_observations": 572,
     "training_start": "1976-08",
     "training_end": "2025-02",
-    "pseudo_r2": 0.4696,
+    "pseudo_r2": 0.3987,
     "target_definition": "point"
   },
   "charts": [
