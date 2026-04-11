@@ -49,9 +49,37 @@ def generate_analysis(summary):
     client = anthropic.Anthropic()
 
     # Build the prompt
-    prompt = f"""You are a senior macro strategist writing a daily recession probability
-briefing for an investment committee. Based on the model output below, write a
-concise, professional email briefing.
+    run_date = summary.get("run_date", datetime.now().strftime("%Y-%m-%d"))
+    data_date = summary.get("data_through", "unknown")
+
+    prompt = f"""You are a senior macro strategist writing a weekly recession probability
+briefing for an investment committee.
+
+TODAY'S DATE: {run_date}
+DATA THROUGH: {data_date}
+
+IMPORTANT: All references to time must be grounded in today's date ({run_date}).
+Do not reference future months that haven't happened yet. When discussing what to
+watch, reference the NEXT data releases relative to {run_date} (e.g. if today is
+April 2026, the next jobs report is in May 2026, not November).
+
+Based on the model output and attached charts below,
+write a substantive, visually-integrated email briefing.
+
+You have 7 charts available. Reference them in your HTML using <img src="cid:chart_0">
+through <img src="cid:chart_6"> tags. The chart order is:
+- cid:chart_0 = Probability gauge (current reading)
+- cid:chart_1 = Probability trend (24-month trailing, is risk rising or falling?)
+- cid:chart_2 = Indicator percentile dashboard (where each indicator sits historically)
+- cid:chart_3 = Model comparison (do all specifications agree?)
+- cid:chart_4 = Indicator sparklines (24-month trailing trends for each feature)
+- cid:chart_5 = Historical probability (full history with NBER recession shading)
+- cid:chart_6 = Sensitivity analysis (which indicators move the needle most)
+
+IMPORTANT: Embed these charts INLINE within the relevant sections of your email using
+img tags with the cid: references above. Do NOT group all charts at the top or bottom.
+Place each chart immediately after the section it illustrates. Add a brief caption
+below each chart in small gray text.
 
 MODEL OUTPUT:
 {json.dumps(summary, indent=2)}
