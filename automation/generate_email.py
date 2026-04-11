@@ -167,8 +167,29 @@ Write the email with these sections:
 
    Place chart_6 (sensitivity/watchlist) after this section.
 
-7. **Adverse Scenario** — Explain what a simultaneous 1-SD deterioration across all indicators
-   would look like in plain English. Is it realistic or a tail risk? Three sentences maximum.
+7. **Adverse Scenario** — Structure as follows. Do NOT assign a numerical probability to this
+   scenario — the model does not estimate conditional joint probabilities and fabricating one
+   would be misleading.
+
+   SCENARIO CLASSIFICATION: "Tail risk. Requires simultaneous deterioration across uncorrelated
+   indicators — historically rare outside of systemic financial crises or external shock events."
+
+   REAL-WORLD TRIGGERS (three bullets):
+   (a) Major Fed policy error — overtightening into slowing growth, forcing rapid pivot that
+       destabilizes credit markets.
+   (b) Energy price shock — sustained oil above $130/barrel reigniting PPI acceleration while
+       suppressing consumer demand.
+   (c) Credit event — regional bank stress or sovereign contagion forcing broad credit spread
+       widening and loan contraction.
+
+   HEDGING IMPLICATION (one paragraph): Apply this framework to the CURRENT ensemble reading:
+   - Below 20% ensemble with stable trend = monitoring posture only, standard rebalancing
+   - 20-35% with rising trend = consider tail hedges (long vol, Treasury duration extension)
+   - Above 35% = defensive repositioning warranted
+   State the current reading, which bracket it falls in, and the explicit conclusion.
+
+   WHAT TO WATCH: Two sentences on which of the three triggers above is most proximate
+   given current data.
 
 8. **What Would Change Our View** — Numbered list of exactly five items. Each includes the
    indicator, the specific threshold, and the economic implication. Use these EXACT items:

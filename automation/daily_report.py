@@ -808,6 +808,49 @@ def run():
     generate_probability_trend(ensemble_series, fitted_full,
                                OUTPUT_DIR / "probability_trend.png")
 
+    # Probability trend attribution: decompose BIC probability change over 24 months
+    trend_attribution = None
+    try:
+        pred_24m_ago_idx = max(0, len(predict_df) - 25)
+        vals_24m_ago = predict_df[bic_selected].iloc[pred_24m_ago_idx].astype(float).values
+        xc_24m_ago = np.concatenate([[1.0], vals_24m_ago])
+        prob_24m_ago = stats.norm.cdf(xc_24m_ago @ res_bic.params.values) * 100
+        prob_change = bic_prob - prob_24m_ago
+
+        # Partial effects: coef_j * delta_x_j * phi(current linear index)
+        linear_index = latest_xc @ res_bic.params.values
+        phi_val = stats.norm.pdf(linear_index)
+        partial_effects = {}
+        for j, feat in enumerate(bic_selected):
+            delta = float(latest_vals[j] - vals_24m_ago[j])
+            coef = res_bic.params.iloc[j + 1]
+            partial_effects[feat] = float(coef * delta * phi_val * 100)
+
+        # Normalize to sum to actual change
+        raw_sum = sum(partial_effects.values())
+        if abs(raw_sum) > 1e-6 and abs(prob_change) > 1e-4:
+            scale = prob_change / raw_sum
+            partial_effects = {k: v * scale for k, v in partial_effects.items()}
+
+        sorted_effects = sorted(partial_effects.items(), key=lambda x: x[1])
+        top_improvement = sorted_effects[0]   # most negative = drove prob down
+        top_risk = sorted_effects[-1]          # most positive = drove prob up
+
+        trend_attribution = {
+            "prob_24m_ago": round(prob_24m_ago, 2),
+            "prob_current": round(bic_prob, 2),
+            "prob_change_pp": round(prob_change, 2),
+            "partial_effects": {k: round(v, 4) for k, v in partial_effects.items()},
+            "top_improvement": {"feature": top_improvement[0], "effect_pp": round(top_improvement[1], 4)},
+            "top_risk": {"feature": top_risk[0], "effect_pp": round(top_risk[1], 4)},
+        }
+        print(f"\nTrend attribution (24-month change: {prob_change:+.2f}pp):")
+        for feat, eff in sorted(partial_effects.items(), key=lambda x: x[1]):
+            print(f"  {feat:<20s}: {eff:+.4f}pp")
+    except Exception as e:
+        print(f"Trend attribution failed: {e}")
+        trend_attribution = {"error": "Attribution decomposition unavailable — inspect coefficient output."}
+
     # 10. Determine signal level
     if ensemble_prob > THRESHOLD_ELEVATED:
         signal = "HIGH"
@@ -850,6 +893,7 @@ def run():
         "sensitivity": scenario_data,
         "adverse_scenario_probability": round(adverse_prob, 2),
         "sign_warnings": sign_warnings,
+        "trend_attribution": trend_attribution,
         "model_metadata": {
             "training_observations": len(model_df),
             "training_start": model_df.index.min().strftime("%Y-%m"),
