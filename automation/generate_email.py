@@ -89,74 +89,129 @@ MODEL OUTPUT:
 {json.dumps(summary, indent=2)}
 
 Write the email with these sections:
-1. **Subject line** — one line, lead with the ensemble probability and signal level.
-   Format: "Recession Probability: [ensemble]% ([SIGNAL]) — Models range [low]% to [high]%"
+1. **Subject line** — one line. Format: "Recession Probability: [ensemble]% — Models range
+   [low]% to [high]%". Do NOT include traffic-light labels (LOW/MODERATE/HIGH) in the subject
+   or anywhere in the narrative text. The color-banded gauge chart handles visual classification.
 
-2. **Executive Summary** (3-5 sentences) — The headline figure is the ENSEMBLE probability
-   (ensemble_probability in the JSON), which is the equal-weighted average of all five models
-   (NY Fed, Wright, BIC-Selected, Estrella-Mishkin, Chauvet-Piger). Lead with: "Our five-model
-   ensemble estimates [X]% probability of recession in the next 12 months. Individual models
-   range from [low]% to [high]%." Then note consensus strength and whether models agree or
-   diverge. The BIC-selected model is ONE input among five — do not present it as the primary
-   figure. If models diverge, explain WHY — e.g. the spread-only model sees yield curve risk
-   that the multi-variable model discounts because other indicators are strong.
+2. **Investment Committee Summary** — This is the FIRST content section, immediately after the
+   Data Through header. It must fit on one page and contain exactly these blocks in order:
 
-3. **Key Indicators Deep Dive** — For EACH BIC-selected indicator, provide:
-   - Current value and its historical percentile
-   - What this indicator measures economically and why it matters for recessions
-   - Whether the current reading is bullish, bearish, or neutral for the economy
-   - How it has changed recently (direction of travel, not just level)
-   For example, don't just say "Consumer Sentiment: 55.1, extremely pessimistic." Instead
-   explain: "Consumer sentiment at 55.1 sits at the 1st percentile of its historical range,
-   reflecting deep consumer pessimism. However, sentiment is a notoriously noisy predictor —
-   consumers were similarly pessimistic in 2022 without a recession following. The model
-   assigns this a positive coefficient (higher sentiment = higher recession risk), capturing
-   the pattern that sentiment often peaks in late-cycle expansions before recessions."
+   SNAPSHOT TABLE (4 rows, formatted as an HTML table):
+   | Current Probability | [ensemble]% |
+   | Direction of Change | [rising/falling/stable based on trend data] |
+   | Primary Risk Driver | [the indicator closest to its warning trigger] |
+   | Primary Offset      | [the indicator most strongly supporting expansion] |
 
-4. **Model Divergence Analysis** — If models disagree (e.g. NY Fed at 19% vs BIC at 0.3%),
-   explain the economic logic behind the divergence. What is the yield curve telling us that
-   the multi-variable model is overriding? Is the multi-variable model right to discount
-   the yield curve signal, or is it being complacent? Include the following limitation note
-   verbatim in the Model Divergence section: "Note: the model assigns a negative coefficient
-   to inflation, reflecting the historical pattern where demand-collapse recessions are preceded
-   by disinflation — this may understate stagflation risk in the current tariff environment
-   where inflation and growth weakness could occur simultaneously."
+   MODEL RANGE (one sentence): "Individual models range from [low]% to [high]%, reflecting
+   meaningful disagreement on yield curve interpretation."
 
-5. **Watchlist — What to Monitor** — The sensitivity data now includes TRIGGER LEVELS:
-   the exact value each indicator would need to reach to push the model probability to
-   30% (warning) or 50% (elevated). Present this as a concrete watchlist table:
-   "SPREAD would need to fall to X to trigger 30% — that's Y points from here."
-   "UNRATE_CHG3 would need to hit Z — that means unemployment rising X pp."
+   PORTFOLIO POSITIONING (bullet format, exactly 4 bullets):
+   - Equities: [stance] — [one-sentence rationale using "consistent with" framing]
+   - Fixed Income: [stance] — [one-sentence rationale]
+   - Credit: [stance] — [one-sentence rationale]
+   - Hedging: [stance] — [one-sentence rationale]
+   Frame ALL positioning as "consistent with [condition]" — never as a directive.
+   Add a footer line in italics: "Positioning reflects model output only and should be
+   evaluated against individual mandate constraints."
+
+   Place chart_0 (probability gauge) after this section.
+
+3. **Executive Summary** (3-5 sentences) — The headline figure is the ENSEMBLE probability.
+   Lead with: "Our five-model ensemble estimates [X]% probability of recession in the next
+   12 months — consistent with expansion-phase conditions, though model dispersion warrants
+   attention." Do NOT use "LOW risk," "MODERATE risk," or "HIGH risk" as labels. Instead
+   describe what the probability level is consistent with. Note consensus strength. The
+   BIC-selected model is one input among five. If models diverge, state the divergence
+   factually and defer the explanation to the Model Divergence section.
+
+   Place chart_1 (probability trend) and chart_3 (model comparison) after this section.
+
+4. **Key Indicators** — Consolidate into exactly four macro buckets. Each gets exactly two
+   sentences: what the indicators currently show, and what that implies for recession risk.
+   Do NOT define what indicators measure. Do NOT include historical context or background.
+
+   **Growth** (housing starts, new home sales): [current readings] [recession risk implication]
+   **Inflation** (core CPI, PPI): [current readings] [recession risk implication]
+   **Policy** (fed funds rate, yield curve spread): [current readings] [recession risk implication]
+   **Market Signals** (credit spreads, consumer sentiment): [current readings] [recession risk implication]
+
+   Place chart_2 (indicator percentiles) and chart_4 (sparklines) after this section.
+
+5. **Model Divergence Analysis** — Structure as exactly three paragraphs:
+
+   Paragraph 1 — Why the yield curve signal still matters: The term spread has preceded every
+   recession since 1968. The current un-inversion phase is historically the most dangerous
+   period — recessions typically begin 6-18 months after the curve steepens from inversion.
+
+   Paragraph 2 — Why this cycle may differ (three specific structural factors only):
+   (a) QE suppressed term premium artificially, making inversion easier to achieve without
+   credit tightening; (b) foreign central bank demand for Treasuries compressed long-end yields
+   independent of growth expectations; (c) post-Basel III bank regulation reduced duration risk
+   appetite, flattening the curve structurally.
+
+   Paragraph 3 — Our judgment: one clear sentence stating which interpretation the ensemble
+   weighting implies, followed by one sentence on what evidence would confirm or deny it.
+   Write with institutional conviction while acknowledging the judgment call.
+
+   Include this limitation note verbatim at the end of the section: "Note: the model assigns
+   a negative coefficient to inflation, reflecting the historical pattern where demand-collapse
+   recessions are preceded by disinflation — this may understate stagflation risk in the
+   current tariff environment where inflation and growth weakness could occur simultaneously."
+
+   Place chart_5 (historical probability) after this section.
+
+6. **Watchlist — Trigger Levels** — Present the sensitivity data as a concrete watchlist table.
    Rank by which triggers are CLOSEST to being hit (smallest distance from current).
-   Explain in plain English what real-world events could cause each move.
+   For each: the indicator, current value, trigger value, distance, and what real-world event
+   could cause the move. Two sentences maximum per indicator.
 
-6. **Adverse Scenario** — Don't just state the probability. Explain what a simultaneous
-   1-SD deterioration across all indicators would look like in plain English: what does
-   the economy feel like in that scenario? Is it realistic or a tail risk?
+   Place chart_6 (sensitivity/watchlist) after this section.
 
-7. **Historical Context** — Briefly note: has the model been at similar levels before?
-   What happened next? Are there any periods in history where the model was similarly
-   low but a recession followed anyway?
+7. **Adverse Scenario** — Explain what a simultaneous 1-SD deterioration across all indicators
+   would look like in plain English. Is it realistic or a tail risk? Three sentences maximum.
 
-8. **Bottom Line for the Committee** — 2-3 sentences of actionable guidance. Lead with the
-   ensemble figure, not the BIC model: "Our five-model ensemble at [X]% signals [SIGNAL]
-   risk." Reference the specific trigger levels from the watchlist: "The nearest trigger is
-   [indicator] at [value], currently [distance] away. Until [condition], maintain current
-   positioning." What would change the recommendation next week?
+8. **What Would Change Our View** — Numbered list of exactly five items. Each includes the
+   indicator, the specific threshold, and the economic implication. Use these EXACT items:
 
-   Immediately before the Bottom Line paragraph, insert a DATA CURRENCY NOTICE block.
-   Use the "data_through" and "lagged_series" fields from the JSON. Format it as a gray
-   bordered box with this exact structure:
+   1. Term spread falls below -1.0% — historically associated with hard landing risk; would
+      trigger material upward revision to ensemble.
+   2. Core CPI drops below 1.5% — signals demand destruction outpacing supply normalization;
+      deflation risk inconsistent with soft landing.
+   3. Housing starts decline exceeds 15% year-over-year — indicates mortgage rate transmission
+      accelerating beyond stabilization phase.
+   4. Initial jobless claims sustain above 300K on four-week average — early deterioration in
+      labor demand before unemployment rate responds.
+   5. Ensemble probability rises above 20% for two consecutive monthly updates — model
+      convergence signal that would warrant defensive repositioning review.
+
+   These thresholds are hardcoded. Do not compute them dynamically or modify the wording.
+
+9. **Data Currency Notice** — Format as a gray bordered box. Use the "data_through" and
+   "lagged_series" fields from the JSON:
    "Data Currency Notice: This briefing reflects FRED data available through [data_through].
    The following series have publication lags exceeding 30 days and will update on their next
    FRED vintage release: [comma-separated lagged_series list, or 'None' if empty]. Conditions
    may have changed materially since the data cutoff. Model probabilities will refresh
    automatically on next scheduled run."
 
+10. **Bottom Line for the Committee** — 2-3 sentences. Lead with the ensemble figure:
+    "Our five-model ensemble at [X]% — consistent with [expansion/contraction/transition]
+    conditions." Reference the nearest trigger from the watchlist. State what would change
+    the recommendation. Do NOT use traffic-light labels.
+
+LANGUAGE RULES (apply globally across all sections):
+- Remove any sentence that restates what a chart already shows.
+- Remove any sentence that defines what an indicator measures (the committee knows).
+- Replace "suggests" with "indicates" or "shows" where the evidence is clear.
+- Replace "may" with "could" where appropriate.
+- Eliminate all uses of "it's worth noting," "notably," "importantly," and "it is important to."
+- Do not hedge every sentence. Write with institutional conviction.
+- Never describe probability as "LOW risk" or "HIGH risk" — describe what it is consistent with.
+
 Format the email body as clean HTML suitable for email clients. Use inline CSS only.
-Target length: 800-1200 words. This is a substantive analytical memo, not a dashboard summary.
+Target length: 1000-1500 words. This is an institutional investment memo, not a blog summary.
 The tone should be that of a senior economist briefing the CIO — authoritative, specific,
-and willing to take a view on where the risks lie.
+and willing to take a view.
 Do not use emojis. Use percentage signs and basis points where appropriate.
 
 Return your response as JSON with two keys:
