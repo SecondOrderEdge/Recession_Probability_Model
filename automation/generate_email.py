@@ -262,11 +262,24 @@ Return your response as JSON with two keys:
             })
 
     print("Sending to Claude API for analysis...")
-    response = client.messages.create(
-        model="claude-sonnet-4-20250514",
-        max_tokens=8192,
-        messages=[{"role": "user", "content": content}],
-    )
+    response = None
+    for attempt in range(4):
+        try:
+            response = client.messages.create(
+                model="claude-sonnet-4-20250514",
+                max_tokens=8192,
+                messages=[{"role": "user", "content": content}],
+            )
+            break
+        except Exception as e:
+            if attempt < 3:
+                import time
+                wait = 2 ** (attempt + 1)
+                print(f"  API error (attempt {attempt+1}/4): {e}. Retrying in {wait}s...")
+                time.sleep(wait)
+            else:
+                print(f"  API failed after 4 attempts: {e}")
+                raise
 
     # Parse response
     response_text = response.content[0].text
