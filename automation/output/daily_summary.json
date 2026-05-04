@@ -1,5 +1,5 @@
 {
-  "run_date": "2026-04-27",
+  "run_date": "2026-05-04",
   "data_through": "2026-01",
   "lagged_series": [
     "SPREAD (last: 2026-03)",
@@ -7,20 +7,20 @@
     "FEDFUNDS (last: 2026-03)",
     "CPILFESL_YOY (last: 2026-03)",
     "PPIACO_YOY (last: 2026-03)",
-    "HOUST_YOY (last: 2026-01)"
+    "HOUST_YOY (last: 2026-03)"
   ],
-  "ensemble_probability": 11.04,
-  "bic_probability": 8.42,
-  "ci_lower": 4.49,
-  "ci_upper": 11.94,
+  "ensemble_probability": 8.46,
+  "bic_probability": 3.55,
+  "ci_lower": 1.1,
+  "ci_upper": 6.04,
   "signal": "LOW",
-  "consensus": "MODERATE",
+  "consensus": "STRONG",
   "model_probabilities": {
-    "NY Fed (Spread Only)": 19.4,
-    "Wright (Spread + FF)": 12.83,
-    "BIC-Selected": 8.42,
+    "NY Fed (Spread Only)": 14.02,
+    "Wright (Spread + FF)": 8.81,
+    "BIC-Selected": 3.55,
     "Estrella-Mishkin": 14.09,
-    "Chauvet-Piger": 0.48
+    "Chauvet-Piger": 1.82
   },
   "bic_selected_features": [
     "SPREAD",
@@ -32,58 +32,58 @@
   ],
   "indicator_readings": {
     "SPREAD": {
-      "value": 0.2,
+      "value": 0.64,
       "category": "Yields (derived)",
-      "percentile": 16.0
+      "percentile": 25.0
     },
     "HSN1F_YOY": {
-      "value": 0.2789,
+      "value": -11.3293,
       "category": "Housing",
-      "percentile": 44.0
+      "percentile": 23.0
     },
     "FEDFUNDS": {
-      "value": 4.22,
+      "value": 3.64,
       "category": "Yields",
-      "percentile": 46.0
+      "percentile": 43.0
     },
     "CPILFESL_YOY": {
-      "value": 3.02,
+      "value": 2.512,
       "category": "Inflation",
-      "percentile": 57.0
+      "percentile": 45.0
     },
     "PPIACO_YOY": {
-      "value": 3.709,
+      "value": 2.3799,
       "category": "Inflation",
-      "percentile": 57.0
+      "percentile": 49.0
     },
     "HOUST_YOY": {
-      "value": -2.1371,
+      "value": 2.9455,
       "category": "Housing",
-      "percentile": 41.0
+      "percentile": 55.0
     }
   },
   "sensitivity": [
     {
       "feature": "SPREAD",
       "category": "Yields (derived)",
-      "current_value": 0.20000000000000018,
+      "current_value": 0.6400000000000001,
       "std_dev": 1.311622965479558,
-      "prob_minus_1sd": 17.86527961103167,
-      "prob_plus_1sd": 3.334438984450866,
-      "impact_pp": -14.530840626580805,
-      "trigger_30pct": -2.25,
-      "distance_30pct": -2.45,
-      "trigger_50pct": -3.76,
-      "distance_50pct": -3.96
+      "prob_minus_1sd": 8.867927138196963,
+      "prob_plus_1sd": 1.1842920987584202,
+      "impact_pp": -7.683635039438543,
+      "trigger_30pct": -3.04,
+      "distance_30pct": -3.68,
+      "trigger_50pct": -4.55,
+      "distance_50pct": -5.19
     },
     {
       "feature": "HSN1F_YOY",
       "category": "Housing",
-      "current_value": 0.2789400278939924,
+      "current_value": -11.329305135951662,
       "std_dev": 19.51657068012006,
-      "prob_minus_1sd": 8.722315846787893,
-      "prob_plus_1sd": 8.132377418974674,
-      "impact_pp": -0.5899384278132196,
+      "prob_minus_1sd": 3.7011094627868024,
+      "prob_plus_1sd": 3.4027399305379116,
+      "impact_pp": -0.29836953224889085,
       "trigger_30pct": null,
       "distance_30pct": null,
       "trigger_50pct": null,
@@ -92,77 +92,77 @@
     {
       "feature": "FEDFUNDS",
       "category": "Yields",
-      "current_value": 4.22,
+      "current_value": 3.64,
       "std_dev": 4.000370034309777,
-      "prob_minus_1sd": 0.8952188149033655,
-      "prob_plus_1sd": 34.9493851291099,
-      "impact_pp": 34.05416631420653,
-      "trigger_30pct": 7.66,
-      "distance_30pct": 3.44,
-      "trigger_50pct": 9.78,
-      "distance_50pct": 5.56
+      "prob_minus_1sd": 0.2586880243812796,
+      "prob_plus_1sd": 20.750502410726124,
+      "impact_pp": 20.491814386344846,
+      "trigger_30pct": 8.81,
+      "distance_30pct": 5.17,
+      "trigger_50pct": 10.93,
+      "distance_50pct": 7.29
     },
     {
       "feature": "CPILFESL_YOY",
       "category": "Inflation",
-      "current_value": 3.0199668258857892,
+      "current_value": 2.512028782828879,
       "std_dev": 2.447626350422209,
-      "prob_minus_1sd": 28.53634490320126,
-      "prob_plus_1sd": 1.4360468523892707,
-      "impact_pp": -27.10029805081199,
-      "trigger_30pct": 0.44,
-      "distance_30pct": -2.58,
-      "trigger_50pct": -1.14,
-      "distance_50pct": -4.16
+      "prob_minus_1sd": 15.977021392831075,
+      "prob_plus_1sd": 0.44520127924104863,
+      "impact_pp": -15.531820113590026,
+      "trigger_30pct": -1.36,
+      "distance_30pct": -3.87,
+      "trigger_50pct": -2.94,
+      "distance_50pct": -5.45
     },
     {
       "feature": "PPIACO_YOY",
       "category": "Inflation",
-      "current_value": 3.709009743472036,
+      "current_value": 2.3799347217904776,
       "std_dev": 5.830480309684106,
-      "prob_minus_1sd": 1.8589766441918762,
-      "prob_plus_1sd": 25.127275979571984,
-      "impact_pp": 23.268299335380107,
-      "trigger_30pct": 10.74,
-      "distance_30pct": 7.04,
-      "trigger_50pct": 15.07,
-      "distance_50pct": 11.36
+      "prob_minus_1sd": 0.5998907241346034,
+      "prob_plus_1sd": 13.590335888612554,
+      "impact_pp": 12.99044516447795,
+      "trigger_30pct": 12.95,
+      "distance_30pct": 10.57,
+      "trigger_50pct": 17.28,
+      "distance_50pct": 14.9
     },
     {
       "feature": "HOUST_YOY",
       "category": "Housing",
-      "current_value": -2.1370670596904895,
+      "current_value": 2.945508100147265,
       "std_dev": 20.384988151189162,
-      "prob_minus_1sd": 21.905323899719587,
-      "prob_plus_1sd": 2.391462385806132,
-      "impact_pp": -19.513861513913454,
-      "trigger_30pct": -31.02,
-      "distance_30pct": -28.89,
-      "trigger_50pct": -48.79,
-      "distance_50pct": -46.65
+      "prob_minus_1sd": 11.433032621337812,
+      "prob_plus_1sd": 0.8035396128117153,
+      "impact_pp": -10.629493008526097,
+      "trigger_30pct": -40.46,
+      "distance_30pct": -43.4,
+      "trigger_50pct": -58.22,
+      "distance_50pct": -61.17
     }
   ],
-  "adverse_scenario_probability": 98.64,
+  "adverse_scenario_probability": 96.24,
   "sign_warnings": [],
   "trend_attribution": {
-    "prob_24m_ago": 3.75,
-    "prob_current": 8.42,
-    "prob_change_pp": 4.68,
+    "prob_24m_ago": 2.16,
+    "prob_current": 3.55,
+    "prob_change_pp": 1.39,
     "partial_effects": {
-      "SPREAD": -4.5968,
-      "HSN1F_YOY": 0.2615,
-      "FEDFUNDS": -3.1831,
-      "CPILFESL_YOY": 4.2507,
-      "PPIACO_YOY": 9.9036,
-      "HOUST_YOY": -1.9576
+      "SPREAD": -2.6413,
+      "HSN1F_YOY": 0.182,
+      "FEDFUNDS": -2.6903,
+      "CPILFESL_YOY": 3.2249,
+      "PPIACO_YOY": 4.756,
+      "HOUST_YOY": -1.4452
     },
     "top_improvement": {
-      "feature": "SPREAD",
-      "effect_pp": -4.5968
+      "feature": "FEDFUNDS",
+      "effect_pp": -2.6903
     },
     "top_risk": {
       "feature": "PPIACO_YOY",
-      "effect_pp": 9.9036
+      "effect_pp": 4.756
     }
   },
   "model_metadata": {
