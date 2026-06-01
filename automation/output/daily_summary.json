@@ -1,25 +1,25 @@
 {
-  "run_date": "2026-05-25",
-  "data_through": "2026-03",
+  "run_date": "2026-06-01",
+  "data_through": "2026-04",
   "lagged_series": [
-    "SPREAD (last: 2026-03)",
-    "HSN1F_YOY (last: 2026-03)",
-    "FEDFUNDS (last: 2026-03)",
-    "CPILFESL_YOY (last: 2026-03)",
-    "PPIACO_YOY (last: 2026-03)",
-    "HOUST_YOY (last: 2026-03)"
+    "SPREAD (last: 2026-04)",
+    "HSN1F_YOY (last: 2026-04)",
+    "FEDFUNDS (last: 2026-04)",
+    "CPILFESL_YOY (last: 2026-04)",
+    "PPIACO_YOY (last: 2026-04)",
+    "HOUST_YOY (last: 2026-04)"
   ],
-  "ensemble_probability": 8.49,
-  "bic_probability": 3.72,
-  "ci_lower": 1.18,
-  "ci_upper": 6.35,
+  "ensemble_probability": 8.24,
+  "bic_probability": 3.7,
+  "ci_lower": 1.12,
+  "ci_upper": 6.46,
   "signal": "LOW",
   "consensus": "STRONG",
   "model_probabilities": {
-    "NY Fed (Spread Only)": 14.02,
-    "Wright (Spread + FF)": 8.81,
-    "BIC-Selected": 3.72,
-    "Estrella-Mishkin": 14.09,
+    "NY Fed (Spread Only)": 13.97,
+    "Wright (Spread + FF)": 8.77,
+    "BIC-Selected": 3.7,
+    "Estrella-Mishkin": 12.96,
     "Chauvet-Piger": 1.82
   },
   "bic_selected_features": [
@@ -37,9 +37,9 @@
       "percentile": 25.0
     },
     "HSN1F_YOY": {
-      "value": -11.9335,
+      "value": -13.3835,
       "category": "Housing",
-      "percentile": 22.0
+      "percentile": 21.0
     },
     "FEDFUNDS": {
       "value": 3.64,
@@ -67,23 +67,23 @@
       "feature": "SPREAD",
       "category": "Yields (derived)",
       "current_value": 0.6400000000000001,
-      "std_dev": 1.311622965479558,
-      "prob_minus_1sd": 9.210315623335402,
-      "prob_plus_1sd": 1.2514146000073056,
-      "impact_pp": -7.958901023328097,
-      "trigger_30pct": -2.98,
-      "distance_30pct": -3.62,
-      "trigger_50pct": -4.49,
-      "distance_50pct": -5.13
+      "std_dev": 1.3119611216978002,
+      "prob_minus_1sd": 9.16595940044746,
+      "prob_plus_1sd": 1.2478938767465604,
+      "impact_pp": -7.918065523700899,
+      "trigger_30pct": -2.99,
+      "distance_30pct": -3.63,
+      "trigger_50pct": -4.5,
+      "distance_50pct": -5.14
     },
     {
       "feature": "HSN1F_YOY",
       "category": "Housing",
-      "current_value": -11.933534743202411,
-      "std_dev": 19.51657068012006,
-      "prob_minus_1sd": 3.8839308768113137,
-      "prob_plus_1sd": 3.557151749558518,
-      "impact_pp": -0.32677912725279556,
+      "current_value": -13.383458646616543,
+      "std_dev": 19.46850435740575,
+      "prob_minus_1sd": 3.8644410465630314,
+      "prob_plus_1sd": 3.545758857096205,
+      "impact_pp": -0.3186821894668266,
       "trigger_30pct": null,
       "distance_30pct": null,
       "trigger_50pct": null,
@@ -93,24 +93,24 @@
       "feature": "FEDFUNDS",
       "category": "Yields",
       "current_value": 3.64,
-      "std_dev": 4.000370034309777,
-      "prob_minus_1sd": 0.27614029055639,
-      "prob_plus_1sd": 21.358734998884284,
-      "impact_pp": 21.082594708327893,
+      "std_dev": 3.996900063765882,
+      "prob_minus_1sd": 0.27362938217689975,
+      "prob_plus_1sd": 21.33520660859325,
+      "impact_pp": 21.06157722641635,
       "trigger_30pct": 8.73,
       "distance_30pct": 5.09,
-      "trigger_50pct": 10.85,
-      "distance_50pct": 7.21
+      "trigger_50pct": 10.84,
+      "distance_50pct": 7.2
     },
     {
       "feature": "CPILFESL_YOY",
       "category": "Inflation",
       "current_value": 2.512028782828879,
-      "std_dev": 2.447626350422209,
-      "prob_minus_1sd": 16.491624434059904,
-      "prob_plus_1sd": 0.47374081932374973,
-      "impact_pp": -16.017883614736153,
-      "trigger_30pct": -1.3,
+      "std_dev": 2.4457526720080995,
+      "prob_minus_1sd": 16.462911033560662,
+      "prob_plus_1sd": 0.470141903483244,
+      "impact_pp": -15.992769130077418,
+      "trigger_30pct": -1.29,
       "distance_30pct": -3.81,
       "trigger_50pct": -2.88,
       "distance_50pct": -5.39
@@ -119,57 +119,57 @@
       "feature": "PPIACO_YOY",
       "category": "Inflation",
       "current_value": 2.4001398818775055,
-      "std_dev": 5.830480309684106,
-      "prob_minus_1sd": 0.6373204216232052,
-      "prob_plus_1sd": 14.049381296594865,
-      "impact_pp": 13.41206087497166,
-      "trigger_30pct": 12.8,
-      "distance_30pct": 10.4,
-      "trigger_50pct": 17.13,
-      "distance_50pct": 14.73
+      "std_dev": 5.82638925602334,
+      "prob_minus_1sd": 0.6315346350511213,
+      "prob_plus_1sd": 14.03735037055101,
+      "impact_pp": 13.405815735499889,
+      "trigger_30pct": 12.79,
+      "distance_30pct": 10.39,
+      "trigger_50pct": 17.11,
+      "distance_50pct": 14.71
     },
     {
       "feature": "HOUST_YOY",
       "category": "Housing",
       "current_value": 2.3651145602365142,
-      "std_dev": 20.389152911570175,
-      "prob_minus_1sd": 11.824120575502933,
-      "prob_plus_1sd": 0.8538270777272646,
-      "impact_pp": -10.970293497775668,
-      "trigger_30pct": -40.41,
-      "distance_30pct": -42.77,
-      "trigger_50pct": -58.21,
-      "distance_50pct": -60.58
+      "std_dev": 20.371353603268442,
+      "prob_minus_1sd": 11.798737450839702,
+      "prob_plus_1sd": 0.8480534860573626,
+      "impact_pp": -10.950683964782339,
+      "trigger_30pct": -40.39,
+      "distance_30pct": -42.76,
+      "trigger_50pct": -58.16,
+      "distance_50pct": -60.53
     }
   ],
-  "adverse_scenario_probability": 96.4,
+  "adverse_scenario_probability": 96.41,
   "sign_warnings": [],
   "trend_attribution": {
-    "prob_24m_ago": 2.14,
-    "prob_current": 3.72,
-    "prob_change_pp": 1.57,
+    "prob_24m_ago": 2.12,
+    "prob_current": 3.7,
+    "prob_change_pp": 1.58,
     "partial_effects": {
-      "SPREAD": -2.6878,
-      "HSN1F_YOY": 0.1994,
-      "FEDFUNDS": -2.7382,
-      "CPILFESL_YOY": 3.2818,
-      "PPIACO_YOY": 4.8547,
-      "HOUST_YOY": -1.3358
+      "SPREAD": -2.665,
+      "HSN1F_YOY": 0.2036,
+      "FEDFUNDS": -2.7258,
+      "CPILFESL_YOY": 3.266,
+      "PPIACO_YOY": 4.8359,
+      "HOUST_YOY": -1.3297
     },
     "top_improvement": {
       "feature": "FEDFUNDS",
-      "effect_pp": -2.7382
+      "effect_pp": -2.7258
     },
     "top_risk": {
       "feature": "PPIACO_YOY",
-      "effect_pp": 4.8547
+      "effect_pp": 4.8359
     }
   },
   "model_metadata": {
-    "training_observations": 573,
+    "training_observations": 574,
     "training_start": "1976-08",
-    "training_end": "2025-03",
-    "pseudo_r2": 0.4199,
+    "training_end": "2025-04",
+    "pseudo_r2": 0.42,
     "target_definition": "point"
   },
   "charts": [
