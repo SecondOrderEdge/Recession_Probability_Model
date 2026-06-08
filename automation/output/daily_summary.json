@@ -1,5 +1,5 @@
 {
-  "run_date": "2026-06-01",
+  "run_date": "2026-06-08",
   "data_through": "2026-04",
   "lagged_series": [
     "SPREAD (last: 2026-04)",
@@ -9,7 +9,7 @@
     "PPIACO_YOY (last: 2026-04)",
     "HOUST_YOY (last: 2026-04)"
   ],
-  "ensemble_probability": 8.24,
+  "ensemble_probability": 7.97,
   "bic_probability": 3.7,
   "ci_lower": 1.12,
   "ci_upper": 6.46,
@@ -20,7 +20,7 @@
     "Wright (Spread + FF)": 8.77,
     "BIC-Selected": 3.7,
     "Estrella-Mishkin": 12.96,
-    "Chauvet-Piger": 1.82
+    "Chauvet-Piger": 0.44
   },
   "bic_selected_features": [
     "SPREAD",
